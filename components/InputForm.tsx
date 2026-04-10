@@ -1,22 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { UserInput, CardinalDirection, UserProfile } from '../types';
 import { EV_EFFICIENCY } from '../constants';
+import { fetchSolarData } from '../services/solarApiService';
+import { getCoordinatesFromAddress, estimateRoofWithAI } from '../services/geminiService';
 
 interface InputFormProps {
   onSimulate: (data: UserInput) => void;
   isSimulating: boolean;
 }
 
-const ORIENTATION_OPTIONS: { value: CardinalDirection; label: string }[] = [
-  { value: 'S', label: 'Sud (Optimum)' },
-  { value: 'SE', label: 'Sud-Est' },
-  { value: 'SW', label: 'Sud-Ouest' },
-  { value: 'E', label: 'Est' },
-  { value: 'W', label: 'Ouest' },
-  { value: 'NE', label: 'Nord-Est' },
-  { value: 'NW', label: 'Nord-Ouest' },
-  { value: 'N', label: 'Nord' },
+const ORIENTATION_OPTIONS: { value: CardinalDirection; label: string; icon: string }[] = [
+  { value: 'S', label: 'Sud', icon: '↓' },
+  { value: 'SE', label: 'Sud-Est', icon: '↘' },
+  { value: 'SW', label: 'Sud-Ouest', icon: '↙' },
+  { value: 'E', label: 'Est', icon: '→' },
+  { value: 'W', label: 'Ouest', icon: '←' },
+  { value: 'NE', label: 'Nord-Est', icon: '↗' },
+  { value: 'NW', label: 'Nord-Ouest', icon: '↖' },
+  { value: 'N', label: 'Nord', icon: '↑' },
 ];
+
+const azimuthToCardinal = (azimuth: number): CardinalDirection => {
+  const normalized = (azimuth + 360) % 360;
+  if (normalized >= 337.5 || normalized < 22.5) return 'N';
+  if (normalized >= 22.5 && normalized < 67.5) return 'NE';
+  if (normalized >= 67.5 && normalized < 112.5) return 'E';
+  if (normalized >= 112.5 && normalized < 157.5) return 'SE';
+  if (normalized >= 157.5 && normalized < 202.5) return 'S';
+  if (normalized >= 202.5 && normalized < 247.5) return 'SW';
+  if (normalized >= 247.5 && normalized < 292.5) return 'W';
+  if (normalized >= 292.5 && normalized < 337.5) return 'NW';
+  return 'S';
+};
 
 export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }) => {
   const [step, setStep] = useState<number>(1);
@@ -28,15 +43,19 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
     roofArea: 50,
     roofSegments: ['S'],
     userProfile: 'active',
-    hasElectricVehicle: false,
-    electricVehicleKm: 15000,
-    hasHeatPump: false,
+     hasElectricVehicle: false,
+     numElectricVehicles: 1,
+     electricVehicleKm: 15000,
+     electricVehicle2Km: 15000,
+     hasHeatPump: false,
     hasSwimmingPool: false,
-    hasElectricWaterHeater: false
+    hasElectricWaterHeater: false,
+    hasAirConditioning: false
   });
   
   const [mapUrl, setMapUrl] = useState<string>('');
   const [showMap, setShowMap] = useState<boolean>(false);
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -112,6 +131,12 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
     }
   };
 
+  const handleAnalyze = async () => {
+    alert("La fonctionnalité d'analyse de toiture par IA est en cours de développement et sera disponible prochainement.");
+  };
+
+
+
   const handleNext = () => {
     if (formData.address.length < 5) {
       alert("Veuillez entrer une adresse valide.");
@@ -186,10 +211,42 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                    <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] text-horizon-800 font-bold shadow pointer-events-none">
                      Vue Satellite
                    </div>
+                   
+                   {/* Overlay Button for Analysis */}
+                   <div className="absolute inset-0 bg-black/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        type="button"
+                        onClick={handleAnalyze}
+                        disabled={isAnalyzing}
+                        className="bg-white text-horizon-900 px-4 py-2 rounded-full font-bold text-sm shadow-xl border border-horizon-100 flex items-center space-x-2 transform hover:scale-105 transition-transform"
+                      >
+                         {isAnalyzing ? (
+                           <>
+                             <svg className="animate-spin h-4 w-4 text-solar-500" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                             <span>Analyse...</span>
+                           </>
+                         ) : (
+                           <>
+                             <span>✨ Analyser ma toiture</span>
+                           </>
+                         )}
+                      </button>
+                   </div>
                 </div>
-                <div className="mt-2 flex items-start space-x-2">
-                   <svg className="w-4 h-4 text-horizon-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                   <p className="text-xs text-horizon-600">Le bas de la carte indique le <strong>Sud</strong>. Utilisez cette vue pour identifier vos versants.</p>
+                <div className="mt-2 flex items-center justify-between">
+                    <div className="flex items-start space-x-2">
+                      <svg className="w-4 h-4 text-horizon-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <p className="text-xs text-horizon-600">Le bas de la carte indique le <strong>Sud</strong>.</p>
+                    </div>
+                    {!isAnalyzing && (
+                      <button 
+                        type="button" 
+                        onClick={handleAnalyze}
+                        className="text-[10px] font-extrabold text-solar-600 uppercase tracking-widest hover:text-solar-700"
+                      >
+                        Scanner la forme du toit
+                      </button>
+                    )}
                 </div>
               </div>
             </div>
@@ -214,7 +271,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                   />
                   <div className="flex justify-between text-[10px] font-bold text-horizon-400 mt-2 uppercase tracking-tighter">
                     <span>2.000 kWh</span>
-                    <span>11.000 kWh</span>
+                    <span>10.000 kWh</span>
                     <span>20.000 kWh</span>
                   </div>
                 </div>
@@ -238,44 +295,61 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
             </div>
 
             {/* Roof Configuration Multi-Segment */}
-            <div className="bg-gray-50 p-5 rounded-xl border border-horizon-200 space-y-5">
+            <div className="bg-white p-5 rounded-xl border border-horizon-200 shadow-sm space-y-6">
                <div>
-                 <label className="block text-sm font-bold text-horizon-700 mb-3">
-                   Combien de versants disponibles pour l'installation photovoltaïque ?
-                 </label>
-                 <div className="flex space-x-4">
+                 <div className="flex justify-between items-end mb-4">
+                    <div>
+                      <label className="block text-sm font-bold text-horizon-700">
+                        Configuration de votre toiture
+                      </label>
+                      <p className="text-xs text-horizon-500 mt-1">Nombre de versants exposés au soleil</p>
+                    </div>
+                 </div>
+                 
+                 <div className="grid grid-cols-4 gap-2">
                     {[1, 2, 3, 4].map((num) => (
                       <button
                         key={num}
                         type="button"
                         onClick={() => handleNumSegmentsChange(num)}
-                        className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold border transition-all duration-200 ${
+                        className={`py-3 rounded-xl text-sm font-bold border transition-all ${
                           numRoofSegments === num
-                            ? 'bg-horizon-800 text-white border-horizon-800 shadow-md transform scale-[1.02]'
-                            : 'bg-white text-horizon-600 border-horizon-200 hover:border-horizon-400 hover:bg-gray-50'
+                            ? 'bg-solar-500 text-white border-solar-500 shadow-md'
+                            : 'bg-gray-50 text-horizon-600 border-horizon-200 hover:border-horizon-300'
                         }`}
                       >
-                        {num} {num > 1 ? 'V.' : 'V.'}
+                        {num} {num > 1 ? 'Versants' : 'Versant'}
                       </button>
                     ))}
                  </div>
                </div>
                
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 animate-fade-in pt-2 border-t border-horizon-100">
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                  {formData.roofSegments.map((segment, index) => (
-                    <div key={index} className="space-y-2">
-                       <label className="block text-xs font-bold text-horizon-500 uppercase tracking-wide">
-                         Orientation Versant {index + 1}
-                       </label>
-                       <select
-                         value={segment}
-                         onChange={(e) => handleSegmentChange(index, e.target.value as CardinalDirection)}
-                         className="block w-full rounded-lg border-horizon-200 py-2.5 pl-3 bg-white border focus:border-solar-500 focus:ring-solar-500 text-sm font-medium text-horizon-900 shadow-sm"
-                       >
-                         {ORIENTATION_OPTIONS.map((opt) => (
-                           <option key={opt.value} value={opt.value}>{opt.label}</option>
-                         ))}
-                       </select>
+                    <div key={index} className="relative group">
+                       <div className="absolute -top-2.5 left-4 px-2 bg-white text-[10px] font-black text-horizon-400 uppercase tracking-widest z-10">
+                          Versant {index + 1}
+                       </div>
+                       <div className={`flex items-center space-x-3 p-4 rounded-xl border-2 transition-all ${segment === 'S' || segment === 'SE' || segment === 'SW' ? 'bg-solar-50/30' : 'bg-white'}`}>
+                          <div className="w-10 h-10 rounded-full bg-horizon-100 flex items-center justify-center text-xl font-bold text-horizon-800 shadow-inner">
+                             {ORIENTATION_OPTIONS.find(o => o.value === segment)?.icon}
+                          </div>
+                          <div className="flex-1">
+                             <select
+                               value={segment}
+                               title="Orientation du versant"
+                               onChange={(e) => handleSegmentChange(index, e.target.value as CardinalDirection)}
+                               className="block w-full border-none bg-transparent p-0 focus:ring-0 text-sm font-bold text-horizon-900 cursor-pointer"
+                             >
+                               {ORIENTATION_OPTIONS.map((opt) => (
+                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
+                               ))}
+                             </select>
+                             <div className="text-[10px] text-horizon-400 font-bold uppercase mt-0.5">
+                               {segment === 'S' ? 'Exposition Optimale' : 'Exposition Standard'}
+                             </div>
+                          </div>
+                       </div>
                     </div>
                  ))}
                </div>
@@ -394,25 +468,67 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                   </label>
                   
                   {formData.hasElectricVehicle && (
-                    <div className="mt-3 pl-8 animate-fade-in">
-                       <label htmlFor="electricVehicleKm" className="block text-xs font-bold text-horizon-600 mb-1">
-                         Km chargés à la maison par an ?
-                       </label>
-                       <div className="relative">
-                        <input
-                          type="number"
-                          name="electricVehicleKm"
-                          id="electricVehicleKm"
-                          min="0" step="100"
-                          value={formData.electricVehicleKm}
-                          onChange={handleChange}
-                          placeholder="Ex: 15000"
-                          className="block w-full rounded-lg border-horizon-300 py-2 pl-3 pr-16 bg-white border focus:border-solar-500 focus:ring-solar-500 text-sm"
-                        />
-                        <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 text-xs font-bold">km/an</span>
+                    <div className="mt-3 pl-8 animate-fade-in space-y-4">
+                       {/* Selector 1/2 Vehicles */}
+                       <div className="flex bg-gray-100 p-1 rounded-lg w-fit">
+                          {[1, 2].map(n => (
+                            <button
+                              key={n}
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, numElectricVehicles: n }))}
+                              className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
+                                formData.numElectricVehicles === n 
+                                ? 'bg-white text-solar-600 shadow-sm' 
+                                : 'text-horizon-400 hover:text-horizon-600'
+                              }`}
+                            >
+                              {n} {n > 1 ? 'Véhicules' : 'Véhicule'}
+                            </button>
+                          ))}
                        </div>
+
+                       <div className="space-y-3">
+                          <div className="space-y-1">
+                             <label htmlFor="electricVehicleKm" className="block text-[10px] font-bold text-horizon-600 uppercase tracking-tight">
+                               Km annuels {formData.numElectricVehicles === 2 ? '- Véhicule 1' : ''}
+                             </label>
+                             <div className="relative">
+                              <input
+                                type="number"
+                                name="electricVehicleKm"
+                                id="electricVehicleKm"
+                                min="0" step="100"
+                                value={formData.electricVehicleKm}
+                                onChange={handleChange}
+                                className="block w-full rounded-lg border-horizon-300 py-2 pl-3 pr-16 bg-white border focus:border-solar-500 focus:ring-solar-500 text-sm"
+                              />
+                              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 text-xs font-bold">km/an</span>
+                             </div>
+                          </div>
+
+                          {formData.numElectricVehicles === 2 && (
+                            <div className="space-y-1 animate-fade-in">
+                               <label htmlFor="electricVehicle2Km" className="block text-[10px] font-bold text-horizon-600 uppercase tracking-tight">
+                                 Km annuels - Véhicule 2
+                               </label>
+                               <div className="relative">
+                                <input
+                                  type="number"
+                                  name="electricVehicle2Km"
+                                  id="electricVehicle2Km"
+                                  min="0" step="100"
+                                  value={formData.electricVehicle2Km}
+                                  onChange={handleChange}
+                                  className="block w-full rounded-lg border-horizon-300 py-2 pl-3 pr-16 bg-white border focus:border-solar-500 focus:ring-solar-500 text-sm"
+                                />
+                                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 text-xs font-bold">km/an</span>
+                               </div>
+                            </div>
+                          )}
+                       </div>
+
                        <p className="text-[10px] text-solar-600 mt-1 font-medium">
-                         ~{Math.round(formData.electricVehicleKm * EV_EFFICIENCY).toLocaleString()} kWh/an estimés (sur base de {Math.round(EV_EFFICIENCY * 100)}kWh/100km)
+                         ~{Math.round((formData.electricVehicleKm + (formData.numElectricVehicles === 2 ? formData.electricVehicle2Km : 0)) * EV_EFFICIENCY).toLocaleString()} kWh/an estimés (sur base de {Math.round(EV_EFFICIENCY * 100)}kWh/100km)
                        </p>
                     </div>
                   )}
@@ -431,6 +547,22 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                       <span className="mr-2">🏊</span> Piscine / Wellness
                     </div>
                     <div className="text-xs text-horizon-500 mt-0.5">Consommation estivale (filtration/PAC).</div>
+                  </div>
+                </label>
+
+                <label className={`flex items-center p-4 rounded-xl border border-horizon-200 cursor-pointer transition-colors ${formData.hasAirConditioning ? 'bg-horizon-50 border-horizon-400' : 'hover:bg-gray-50'}`}>
+                  <input
+                    type="checkbox"
+                    name="hasAirConditioning"
+                    checked={formData.hasAirConditioning}
+                    onChange={handleChange}
+                    className="h-5 w-5 text-solar-600 focus:ring-solar-500 border-gray-300 rounded mr-3"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-horizon-900 flex items-center">
+                      <span className="mr-2">🌬️</span> Climatisation
+                    </div>
+                    <div className="text-xs text-horizon-500 mt-0.5">Consomme quand le soleil brille (Été).</div>
                   </div>
                 </label>
               </div>

@@ -11,7 +11,8 @@ import {
   ENERGY_INFLATION,
   BATTERY_PRICING,
   SYSTEM_SELECTION_TIERS,
-  SIM_PARAMS
+  SIM_PARAMS,
+  EV_EFFICIENCY
 } from '../constants';
 
 export const calculateSimulation = (input: UserInput, solarData: SolarApiResponse | null = null): SimulationResult => {
@@ -94,12 +95,14 @@ export const calculateSimulation = (input: UserInput, solarData: SolarApiRespons
   
   if (input.hasHeatPump) profileMultiplier *= 0.85; 
   if (input.hasElectricVehicle) {
-      const evConsumption = input.electricVehicleKm * 0.2;
+      const totalKm = input.electricVehicleKm + (input.numElectricVehicles === 2 ? input.electricVehicle2Km : 0);
+      const evConsumption = totalKm * EV_EFFICIENCY;
       const evRatio = evConsumption / input.annualConsumption;
       const evMalus = 1.0 - (evRatio * 0.5); 
       profileMultiplier *= Math.max(0.7, evMalus); 
   }
   if (input.hasElectricWaterHeater) profileMultiplier *= 0.95; 
+  if (input.hasAirConditioning) profileMultiplier *= 1.1; 
   
   let theoreticalNaturalRate = baseSelfConsumption * profileMultiplier;
   

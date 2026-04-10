@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { SimulationResult } from '../types';
+import { SimulationResult, UserInput } from '../types';
 import { SimulationCharts } from './SimulationCharts';
 import ReactMarkdown from 'react-markdown';
 import { generateResultsPdf, downloadPdf } from '../services/pdfService';
 import { CONTACT } from '../constants';
+import emailjs from '@emailjs/browser';
 
 interface ResultsDashboardProps {
   result: SimulationResult;
+  userInput: UserInput;
   aiAnalysis: string | null;
   loadingAi: boolean;
   onReset: () => void;
 }
 
-export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, aiAnalysis, loadingAi, onReset }) => {
+export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, userInput, aiAnalysis, loadingAi, onReset }) => {
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,6 +24,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, aiAn
     email: ''
   });
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   // Calculate the split of autonomy between PV and Battery
   const totalRate = result.selfConsumptionRate || 1;
@@ -43,45 +46,56 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, aiAn
     setIsGeneratingPdf(false);
   };
 
-  const handleSendQuoteRequest = (e: React.FormEvent) => {
+  const handleSendQuoteRequest = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSendingEmail(true);
     
-    // Construct email body
-    const emailSubject = `Demande de devis sur mesure - ${formData.firstName} ${formData.lastName}`;
-    const emailBody = `
-COORDONNÉES CLIENT :
---------------------
-nom : ${formData.lastName}
-Prénom : ${formData.firstName}
-Téléphone : ${formData.phone}
-Email : ${formData.email}
-
-DÉTAILS DE LA SIMULATION :
---------------------------
-Taille du système : ${result.systemSizeKwp} kWc (${result.numberOfPanels} panneaux)
-Batterie : ${result.batteryCapacityKwh} kWh
-Onduleur : ${result.inverterKva} kVA
-Production annuelle estimée : ${result.estimatedAnnualProduction} kWh
-Autonomie estimée : ${result.autonomyPercentage}%
-
-Économie annuelle : ${result.annualSavings} €
-Temps de retour sur investissement : ${result.paybackPeriod} ans
-Gain mensuel moyen : ${result.monthlyGain} €
-Investissement estimé : ${result.totalInvestment} €
-
-ANALYSE EXPERT :
-----------------
-${aiAnalysis || 'Non générée'}
-
-Lien vers la simulation : (Simulation générée le ${new Date().toLocaleDateString('fr-BE')})
+    // Construct simulation details string
+    const simulationDetails = `
+      - Taille : ${result.systemSizeKwp} kWc (${result.numberOfPanels} panneaux)
+      - Batterie : ${result.batteryCapacityKwh} kWh
+      - Onduleur : ${result.inverterKva} kVA
+      - Production est. : ${result.estimatedAnnualProduction} kWh/an
+      - Autonomie : ${result.autonomyPercentage}%
+      - ROI : ${result.paybackPeriod} ans
+      - Investissement : ${result.totalInvestment} €
+      - Économie annuelle : ${result.annualSavings} €
     `.trim();
 
-    const mailtoLink = `mailto:${CONTACT.EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-    
-    // Trigger the email client
-    window.location.href = mailtoLink;
-    
-    setFormSubmitted(true);
+    try {
+      const templateParams = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone: formData.phone,
+        email: formData.email,
+        address: userInput.address,
+        roof_area: userInput.roofArea,
+        system_size: result.systemSizeKwp,
+        panels_count: result.numberOfPanels,
+        battery_capacity: result.batteryCapacityKwh,
+        inverter_kva: result.inverterKva,
+        annual_production: result.estimatedAnnualProduction,
+        autonomy: result.autonomyPercentage,
+        payback_period: result.paybackPeriod,
+        investment: result.totalInvestment,
+        annual_savings: result.annualSavings,
+        ai_analysis: aiAnalysis || 'Analyse non générée'
+      };
+
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        templateParams,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      );
+      
+      setFormSubmitted(true);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de l'email:", error);
+      alert("Une erreur est survenue lors de l'envoi de votre demande. Veuillez nous contacter directement.");
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
 
   return (
@@ -268,7 +282,7 @@ Lien vers la simulation : (Simulation générée le ${new Date().toLocaleDateStr
                     <div className="w-2.5 h-2.5 bg-horizon-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                     <div className="w-2.5 h-2.5 bg-horizon-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
                   </div>
-                  <span className="text-xs text-horizon-500 font-semibold uppercase tracking-wide">L'ingénieur analyse votre dossier...</span>
+                  <span className="text-xs text-horizon-500 font-semibold uppercase tracking-wide">Notre ingénieur IA Horizon Energie analyse votre dossier...</span>
                 </div>
               ) : aiAnalysis ? (
                 <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
@@ -309,8 +323,20 @@ Lien vers la simulation : (Simulation générée le ${new Date().toLocaleDateStr
                            <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Email</label>
                            <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="client@exemple.com" />
                         </div>
-                        <button type="submit" className="w-full py-3 bg-solar-500 text-white font-bold rounded-lg text-sm shadow-lg shadow-solar-100 hover:bg-solar-600 transition-colors">
-                          Envoyer ma demande
+                        <button 
+                          type="submit" 
+                          disabled={isSendingEmail}
+                          className="w-full py-3 bg-solar-500 text-white font-bold rounded-lg text-sm shadow-lg shadow-solar-100 hover:bg-solar-600 transition-colors disabled:opacity-50 flex items-center justify-center"
+                        >
+                          {isSendingEmail ? (
+                            <>
+                              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                              </svg>
+                              Envoi en cours...
+                            </>
+                          ) : 'Envoyer ma demande'}
                         </button>
                      </form>
                    )}

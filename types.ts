@@ -17,10 +17,13 @@ export interface UserInput {
   // Step 2: Detailed Profile
   userProfile: UserProfile;
   hasElectricVehicle: boolean;
-  electricVehicleKm: number; // Km charged at home per year
+  numElectricVehicles: number; // 1 or 2
+  electricVehicleKm: number; // Km charged at home per year for VE1
+  electricVehicle2Km: number; // Km charged at home per year for VE2
   hasHeatPump: boolean;
   hasSwimmingPool: boolean;
   hasElectricWaterHeater: boolean; // Domestic Hot Water
+  hasAirConditioning: boolean;
 }
 
 export interface YearlyData {

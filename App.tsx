@@ -11,11 +11,13 @@ const App: React.FC = () => {
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingAi, setLoadingAi] = useState<boolean>(false);
+  const [userInput, setUserInput] = useState<UserInput | null>(null);
 
   const handleSimulate = async (input: UserInput) => {
     setLoading(true);
     setResult(null);
     setAiAnalysis(null);
+    setUserInput(input);
 
     // 1. Get Coordinates if missing (using Gemini/Maps tool)
     let lat = input.lat;
@@ -112,6 +114,7 @@ const App: React.FC = () => {
         ) : (
           <ResultsDashboard 
             result={result} 
+            userInput={userInput!}
             aiAnalysis={aiAnalysis} 
             loadingAi={loadingAi} 
             onReset={handleReset} 
