@@ -61,7 +61,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
     const timer = setTimeout(() => {
       if (formData.address.length > 3) {
         let query = encodeURIComponent(formData.address);
-        setMapUrl(`https://maps.google.com/maps?q=${query}&t=k&z=20&ie=UTF8&iwloc=&output=embed`);
+        setMapUrl(`https://maps.google.com/maps?q=${query}&t=h&z=20&ie=UTF8&iwloc=&output=embed`);
         setShowMap(true);
       } else {
         setShowMap(false);

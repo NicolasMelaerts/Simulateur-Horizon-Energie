@@ -111,7 +111,7 @@ export const generateExpertAnalysis = async (input: UserInput, result: Simulatio
     return response.text || "Analyse en cours...";
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
-    return "L'analyse experte est temporairement indisponible.";
+    return "L'analyse experte est temporairement indisponible. Le site n'est pas déployé sur un serveur. Sur serveur, Gemini est utiliser pour fournir une analyse en temps que expert en solutions photovoltaïques hybrides pour Horizon-Energie.be (Wallonie).";
   }
 };
 

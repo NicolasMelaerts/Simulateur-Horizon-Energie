@@ -92,7 +92,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
       setFormSubmitted(true);
     } catch (error) {
       console.error("Erreur lors de l'envoi de l'email:", error);
-      alert("Une erreur est survenue lors de l'envoi de votre demande. Veuillez nous contacter directement.");
+      alert("Sur serveur, un mail sera envoyé par noreply@horizon-energie.be sur l'addresse mail d'un commercial pour contacter le potentiel futur client");
     } finally {
       setIsSendingEmail(false);
     }
@@ -388,7 +388,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
       {/* Disclaimer Footnote */}
       <div className="text-center mt-4 pb-2 px-4 opacity-70">
          <p className="text-xs text-horizon-400 italic">
-           * Ceci est une estimation. Un devis détaillé pourra être réalisé après étude technique.
+           * Sur serveur via l'api Gemini l'agent IA spécialisé Horizon Energie fournira une petite analyse.
          </p>
       </div>
     </div>
