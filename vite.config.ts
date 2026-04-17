@@ -12,7 +12,12 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     define: {
-      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY)
+      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY),
+      'process.env.VITE_CRM_WEBHOOK_URL': JSON.stringify(env.VITE_CRM_WEBHOOK_URL),
+      'process.env.VITE_EMAILJS_SERVICE_ID': JSON.stringify(env.VITE_EMAILJS_SERVICE_ID),
+      'process.env.VITE_EMAILJS_TEMPLATE_ID': JSON.stringify(env.VITE_EMAILJS_TEMPLATE_ID),
+      'process.env.VITE_EMAILJS_CLIENT_TEMPLATE_ID': JSON.stringify(env.VITE_EMAILJS_CLIENT_TEMPLATE_ID),
+      'process.env.VITE_EMAILJS_PUBLIC_KEY': JSON.stringify(env.VITE_EMAILJS_PUBLIC_KEY),
     },
     resolve: {
       alias: {

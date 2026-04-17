@@ -92,10 +92,12 @@ const App: React.FC = () => {
             </div>
           </div>
           <div className="hidden md:block text-right">
-             <div className="text-sm font-bold text-horizon-800 bg-horizon-50 px-3 py-1 rounded-full border border-horizon-100">
-               Simulateur photovoltaïque
+             <div className="inline-flex flex-col items-end">
+               <div className="text-sm font-extrabold text-horizon-900 bg-solar-50 px-4 py-1.5 rounded-full border border-solar-100 shadow-sm">
+                 Simulateur Horizon Énergie
+               </div>
+               <div className="text-[10px] font-bold text-horizon-400 mt-1 uppercase tracking-widest mr-2">Wallonie & Bruxelles</div>
              </div>
-             <div className="text-xs text-horizon-500 mt-1 pr-2">Wallonie & Bruxelles</div>
           </div>
         </div>
       </header>
@@ -105,8 +107,8 @@ const App: React.FC = () => {
         {!result ? (
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-extrabold text-horizon-900">
-                Simulateur photovoltaïque
+              <h2 className="text-4xl font-extrabold text-horizon-900 tracking-tight">
+                Simulateur <span className="text-solar-600">Horizon Énergie</span>
               </h2>
             </div>
             <InputForm onSimulate={handleSimulate} isSimulating={loading} />

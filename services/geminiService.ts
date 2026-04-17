@@ -3,10 +3,13 @@ import { SimulationResult, UserInput } from '../types';
 import { GEMINI_EXPERT_PROMPT } from '../constants';
 
 const getAiClient = () => {
-  // @ts-ignore - Vite environment variables access
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  // Try to find the API Key in multiple possible locations (depending on build environment)
+  // @ts-ignore
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || 
+                 // @ts-ignore
+                 (typeof process !== 'undefined' ? process.env.VITE_GEMINI_API_KEY : null);
   
-  if (!apiKey) {
+  if (!apiKey || apiKey === 'undefined') {
     console.error("❌ Gemini API Key missing (VITE_GEMINI_API_KEY)");
     return null;
   }

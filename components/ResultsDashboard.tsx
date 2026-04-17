@@ -102,7 +102,6 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
       return true;
     } catch (error) {
       console.error("Erreur lors de l'envoi de l'email:", error);
-      alert("Sur serveur, un mail sera envoyé par noreply@horizon-energie.be sur l'addresse mail d'un commercial pour contacter le potentiel futur client");
       return false;
     }
   };
@@ -511,9 +510,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
       {/* Disclaimer Footnote */}
       <div className="text-center mt-4 pb-2 px-4 opacity-70">
-          <p className="text-xs text-horizon-400 italic">
-            * Les projections du graphique incluent une inflation énergétique de 3%/an et les frais de maintenance.
-          </p>
+            <p className="mt-4 text-xs text-horizon-500 italic text-center">
+              * Cette simulation est fournie à titre indicatif sur la base d'estimations moyennes. 
+              Les résultats peuvent varier selon la configuration réelle de votre toiture et vos habitudes de consommation. 
+              Une étude technique sur place et un devis personnalisé sont nécessaires pour obtenir des données définitives.
+            </p>
       </div>
     </div>
   );

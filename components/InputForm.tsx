@@ -112,6 +112,11 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
   };
 
   const handleGeolocation = () => {
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      alert("La géolocalisation nécessite une connexion sécurisée (HTTPS). Veuillez activer le SSL sur votre domaine ou entrer l'adresse manuellement.");
+      return;
+    }
+
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -125,7 +130,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
         },
         (error) => {
           console.error("Erreur de géolocalisation", error);
-          alert("Impossible de vous localiser. Veuillez entrer l'adresse manuellement.");
+          alert("Impossible de vous localiser. Veuillez vérifier que vous avez autorisé l'accès à votre position ou entrez l'adresse manuellement.");
         }
       );
     }
