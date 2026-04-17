@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { SimulationResult, UserInput } from '../types';
 import { SimulationCharts } from './SimulationCharts';
 import ReactMarkdown from 'react-markdown';
-import { generateResultsPdf, downloadPdf } from '../services/pdfService';
-import { CONTACT } from '../constants';
+import { generateStructuredPdf, downloadPdf } from '../services/pdfService';
 import emailjs from '@emailjs/browser';
+import { sendClientConfirmationEmail } from '../services/clientEmailService';
+import { pushToCrm } from '../services/crmService';
 
 interface ResultsDashboardProps {
   result: SimulationResult;
@@ -12,9 +13,12 @@ interface ResultsDashboardProps {
   aiAnalysis: string | null;
   loadingAi: boolean;
   onReset: () => void;
+  blurred: boolean;
+  blurEnabled: boolean;
+  onEmailUnlock: () => void;
 }
 
-export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, userInput, aiAnalysis, loadingAi, onReset }) => {
+export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, userInput, aiAnalysis, loadingAi, onReset, blurred, blurEnabled, onEmailUnlock }) => {
   const [showLeadForm, setShowLeadForm] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -25,6 +29,29 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
   });
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [unlockEmail, setUnlockEmail] = useState('');
+  const [unlockFirstName, setUnlockFirstName] = useState('');
+  const [unlockLastName, setUnlockLastName] = useState('');
+  const [unlockPhone, setUnlockPhone] = useState('');
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [thinkingStep, setThinkingStep] = useState(0);
+
+  const thinkingMessages = [
+    "Analyse de votre surface de toiture...",
+    "Notre expert IA Horizon est en train d'analyser votre situation...",
+    "Optimisation du dimensionnement de votre installation...",
+    "Calcul du retour sur investissement...",
+    "Finalisation de l'expertise Horizon..."
+  ];
+
+  React.useEffect(() => {
+    if (loadingAi) {
+      const interval = setInterval(() => {
+        setThinkingStep(prev => (prev + 1) % thinkingMessages.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [loadingAi]);
 
   // Calculate the split of autonomy between PV and Battery
   const totalRate = result.selfConsumptionRate || 1;
@@ -39,35 +66,19 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    const pdf = await generateResultsPdf('results-dashboard', `Horizon_Energie_${formData.lastName || 'Simulation'}.pdf`);
-    if (pdf) {
-      downloadPdf(pdf, `Horizon_Energie_${formData.lastName || 'Simulation'}.pdf`);
-    }
+    const pdf = await generateStructuredPdf(result, userInput, aiAnalysis);
+    const name = formData.lastName || unlockLastName || 'Simulation';
+    downloadPdf(pdf, `Horizon_Energie_${name}.pdf`);
     setIsGeneratingPdf(false);
   };
 
-  const handleSendQuoteRequest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSendingEmail(true);
-    
-    // Construct simulation details string
-    const simulationDetails = `
-      - Taille : ${result.systemSizeKwp} kWc (${result.numberOfPanels} panneaux)
-      - Batterie : ${result.batteryCapacityKwh} kWh
-      - Onduleur : ${result.inverterKva} kVA
-      - Production est. : ${result.estimatedAnnualProduction} kWh/an
-      - Autonomie : ${result.autonomyPercentage}%
-      - ROI : ${result.paybackPeriod} ans
-      - Investissement : ${result.totalInvestment} €
-      - Économie annuelle : ${result.annualSavings} €
-    `.trim();
-
+  const sendLeadEmail = async (firstName: string, lastName: string, phone: string, email: string) => {
     try {
       const templateParams = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        phone: formData.phone,
-        email: formData.email,
+        first_name: firstName,
+        last_name: lastName,
+        phone: phone,
+        email: email,
         address: userInput.address,
         roof_area: userInput.roofArea,
         system_size: result.systemSizeKwp,
@@ -88,14 +99,34 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
         templateParams,
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
-      
-      setFormSubmitted(true);
+      return true;
     } catch (error) {
       console.error("Erreur lors de l'envoi de l'email:", error);
       alert("Sur serveur, un mail sera envoyé par noreply@horizon-energie.be sur l'addresse mail d'un commercial pour contacter le potentiel futur client");
-    } finally {
-      setIsSendingEmail(false);
+      return false;
     }
+  };
+
+  const handleSendQuoteRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSendingEmail(true);
+    const success = await sendLeadEmail(formData.firstName, formData.lastName, formData.phone, formData.email);
+    if (success) {
+      setFormSubmitted(true);
+      sendClientConfirmationEmail(formData.firstName, formData.lastName, formData.email, result, aiAnalysis);
+      pushToCrm(formData.firstName, formData.lastName, formData.email, formData.phone, result, userInput);
+    }
+    setIsSendingEmail(false);
+  };
+
+  const handleUnlockSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUnlocking(true);
+    await sendLeadEmail(unlockFirstName, unlockLastName, unlockPhone, unlockEmail);
+    sendClientConfirmationEmail(unlockFirstName, unlockLastName, unlockEmail, result, aiAnalysis);
+    pushToCrm(unlockFirstName, unlockLastName, unlockEmail, unlockPhone, result, userInput);
+    setIsUnlocking(false);
+    onEmailUnlock();
   };
 
   return (
@@ -159,7 +190,69 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="relative">
+        {/* Email unlock overlay - floats on top of blurred content */}
+        {blurred && (
+          <div className="absolute inset-0 z-20 flex items-start justify-center pt-16">
+            <div className="bg-white/95 backdrop-blur-sm border border-horizon-200 rounded-2xl shadow-2xl p-8 max-w-lg mx-4 text-center">
+              <div className="w-14 h-14 bg-solar-100 text-solar-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              </div>
+              <h3 className="text-xl font-bold text-horizon-900 mb-2">Découvrez vos résultats détaillés</h3>
+              <p className="text-sm text-horizon-500 mb-5">Remplissez vos coordonnées pour accéder à l'analyse complète de votre simulation photovoltaïque.</p>
+              <form onSubmit={handleUnlockSubmit} className="flex flex-col gap-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="text"
+                    required
+                    value={unlockFirstName}
+                    onChange={(e) => setUnlockFirstName(e.target.value)}
+                    placeholder="Prénom"
+                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                  />
+                  <input
+                    type="text"
+                    required
+                    value={unlockLastName}
+                    onChange={(e) => setUnlockLastName(e.target.value)}
+                    placeholder="Nom"
+                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                  />
+                </div>
+                <input
+                  type="email"
+                  required
+                  value={unlockEmail}
+                  onChange={(e) => setUnlockEmail(e.target.value)}
+                  placeholder="votre@email.com"
+                  className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                />
+                <input
+                  type="tel"
+                  required
+                  value={unlockPhone}
+                  onChange={(e) => setUnlockPhone(e.target.value)}
+                  placeholder="04xx / xx xx xx"
+                  className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                />
+                <button type="submit" disabled={isUnlocking} className="px-6 py-3 bg-solar-500 hover:bg-solar-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-solar-100 transition-colors whitespace-nowrap disabled:opacity-50 flex items-center justify-center">
+                  {isUnlocking ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Chargement...
+                    </>
+                  ) : 'Voir les résultats'}
+                </button>
+              </form>
+              <p className="text-[10px] text-horizon-400 mt-3">Vos données restent confidentielles et ne seront pas partagées.</p>
+            </div>
+          </div>
+        )}
+
+      <div className={`grid grid-cols-1 lg:grid-cols-3 gap-8 ${blurred ? 'filter blur-md select-none pointer-events-none' : ''}`}>
         {/* Financial & Performance Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Detailed Numbers Card */}
@@ -276,23 +369,50 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
             
             <div className="flex-grow prose prose-sm prose-slate overflow-y-auto max-h-[400px] bg-gray-50 p-5 rounded-xl border border-horizon-100 relative z-10 text-sm leading-relaxed font-medium text-horizon-700">
               {loadingAi ? (
-                <div className="flex flex-col items-center justify-center h-48 space-y-4">
-                  <div className="flex space-x-2">
-                    <div className="w-2.5 h-2.5 bg-horizon-400 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-horizon-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                    <div className="w-2.5 h-2.5 bg-horizon-400 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                <div className="flex flex-col items-center justify-center h-64 space-y-6">
+                  {/* AI Agent Avatar Animation */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-solar-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
+                    <div className="relative w-20 h-20 bg-horizon-900 rounded-full flex items-center justify-center border-2 border-solar-500/30 shadow-2xl">
+                       <svg className="w-10 h-10 text-solar-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                       </svg>
+                       {/* Orbits */}
+                       <div className="absolute inset-0 border border-solar-500/20 rounded-full animate-ping" style={{ animationDuration: '3s' }}></div>
+                    </div>
                   </div>
-                  <span className="text-xs text-horizon-500 font-semibold uppercase tracking-wide">Notre ingénieur IA Horizon Energie analyse votre dossier...</span>
+                  
+                  <div className="space-y-3 text-center">
+                    <div className="flex justify-center space-x-1.5">
+                      <div className="w-1.5 h-1.5 bg-solar-500 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                      <div className="w-1.5 h-1.5 bg-solar-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      <div className="w-1.5 h-1.5 bg-solar-500 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                    </div>
+                    
+                    {/* Dynamic Thinking Messages */}
+                    <div className="h-10 overflow-hidden flex items-center justify-center">
+                       <p key={thinkingStep} className="text-[11px] md:text-xs font-bold text-horizon-800 uppercase tracking-wider animate-thinking-text text-center px-2">
+                         {thinkingMessages[thinkingStep]}
+                       </p>
+                    </div>
+                    <p className="text-[10px] text-horizon-500 uppercase font-bold tracking-tighter">Expertise Solaire en cours</p>
+                  </div>
                 </div>
               ) : aiAnalysis ? (
-                <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
+                <div className="animate-fade-in">
+                   <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
+                </div>
               ) : (
                 <p className="text-horizon-400 italic text-center mt-10">L'analyse détaillée apparaîtra ici une fois la simulation lancée.</p>
               )}
             </div>
             
             <div className="mt-6 pt-4 border-t border-horizon-100 relative z-10 space-y-3">
-              {showLeadForm ? (
+              {blurEnabled ? (
+                <>
+                  {/* En mode blur, le devis a déjà été envoyé via le formulaire de déblocage */}
+                </>
+              ) : showLeadForm ? (
                 <div className="animate-fade-in bg-white p-4 rounded-xl border border-horizon-200 shadow-sm">
                    {formSubmitted ? (
                      <div className="text-center py-4">
@@ -301,7 +421,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                         </div>
                         <h4 className="font-bold text-horizon-900">Demande envoyée !</h4>
                         <p className="text-xs text-horizon-500 mt-1">Un conseiller de Horizon Energie vous recontactera.</p>
-                        <button onClick={() => {setShowLeadForm(false); setFormSubmitted(false);}} className="mt-4 text-xs font-bold text-solar-600 uppercase">Retour</button>
+                        <button type="button" onClick={() => {setShowLeadForm(false); setFormSubmitted(false);}} className="mt-4 text-xs font-bold text-solar-600 uppercase">Retour</button>
                      </div>
                    ) : (
                      <form onSubmit={handleSendQuoteRequest} className="space-y-3">
@@ -323,8 +443,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                            <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Email</label>
                            <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="client@exemple.com" />
                         </div>
-                        <button 
-                          type="submit" 
+                        <button
+                          type="submit"
                           disabled={isSendingEmail}
                           className="w-full py-3 bg-solar-500 text-white font-bold rounded-lg text-sm shadow-lg shadow-solar-100 hover:bg-solar-600 transition-colors disabled:opacity-50 flex items-center justify-center"
                         >
@@ -343,53 +463,57 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                 </div>
               ) : (
                 <>
-                  <button 
+                  <button
+                    type="button"
                     onClick={() => setShowLeadForm(true)}
                     className="w-full py-4 px-4 bg-solar-500 hover:bg-solar-600 text-white rounded-xl text-lg font-bold shadow-xl shadow-solar-100 transition-all transform hover:scale-[1.02] flex items-center justify-center group no-pdf"
                   >
                     Demandez un devis sur mesure
                     <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                   </button>
-                  
-                  <button 
-                    onClick={handleDownloadPdf}
-                    disabled={isGeneratingPdf}
-                    className="w-full py-3 px-4 bg-white border-2 border-solar-500 text-solar-600 hover:bg-solar-50 rounded-xl text-sm font-bold transition-all flex items-center justify-center group no-pdf disabled:opacity-50"
-                  >
-                    {isGeneratingPdf ? (
-                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-solar-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Génération du PDF...
-                      </span>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                        Télécharger mon rapport PDF
-                      </>
-                    )}
-                  </button>
-
-                  <button 
-                    onClick={onReset}
-                    className="w-full py-2 text-horizon-400 hover:text-horizon-600 text-xs font-bold uppercase tracking-widest transition-colors no-pdf"
-                  >
-                    Faire un nouvel essai
-                  </button>
                 </>
               )}
+
+              <button
+                type="button"
+                onClick={handleDownloadPdf}
+                disabled={isGeneratingPdf}
+                className="w-full py-3 px-4 bg-white border-2 border-solar-500 text-solar-600 hover:bg-solar-50 rounded-xl text-sm font-bold transition-all flex items-center justify-center group no-pdf disabled:opacity-50"
+              >
+                {isGeneratingPdf ? (
+                  <span className="flex items-center">
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-solar-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Génération du PDF...
+                  </span>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    Télécharger mon rapport PDF
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={onReset}
+                className="w-full py-2 text-horizon-400 hover:text-horizon-600 text-xs font-bold uppercase tracking-widest transition-colors no-pdf"
+              >
+                Faire un nouvel essai
+              </button>
             </div>
           </div>
         </div>
       </div>
-      
+      </div>
+
       {/* Disclaimer Footnote */}
       <div className="text-center mt-4 pb-2 px-4 opacity-70">
-         <p className="text-xs text-horizon-400 italic">
-           * Sur serveur via l'api Gemini l'agent IA spécialisé Horizon Energie fournira une petite analyse.
-         </p>
+          <p className="text-xs text-horizon-400 italic">
+            * Les projections du graphique incluent une inflation énergétique de 3%/an et les frais de maintenance.
+          </p>
       </div>
     </div>
   );

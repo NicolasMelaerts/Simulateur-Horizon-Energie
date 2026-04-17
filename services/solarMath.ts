@@ -168,23 +168,41 @@ export const calculateSimulation = (input: UserInput, solarData: SolarApiRespons
   const paybackPeriod = totalInvestment / (totalAnnualGain - MAINTENANCE_COST);
   const roiPercentage = ((totalAnnualGain - MAINTENANCE_COST) / totalInvestment) * 100;
 
-  // --- 6. CHART DATA ---
+  // --- 6. CHART DATA & PRECISE ROI ---
   
   const chartData: YearlyData[] = [];
   let cumulative = -totalInvestment;
   const energyInflation = ENERGY_INFLATION;
+  let detectedPaybackYear: number | null = null;
 
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 25; i++) { // Extended to 25 years for better visibility
     const adjustedGain = (totalAnnualGain * Math.pow(1 + energyInflation, i-1)) - MAINTENANCE_COST;
+    const prevCumulative = cumulative;
     cumulative += adjustedGain;
     
-    chartData.push({
-      year: i,
-      cumulativeNetGain: Math.round(cumulative),
-      cumulativeCost: totalInvestment,
-      annualGain: Math.round(adjustedGain)
-    });
+    // Detect precise payback period (interpolation)
+    if (detectedPaybackYear === null && cumulative >= 0) {
+      if (i === 1) {
+        detectedPaybackYear = totalInvestment / adjustedGain;
+      } else {
+        // Linear interpolation between year i-1 and i
+        // prevCumulative is < 0, cumulative is >= 0
+        const fraction = Math.abs(prevCumulative) / adjustedGain;
+        detectedPaybackYear = (i - 1) + fraction;
+      }
+    }
+
+    if (i <= 20) { // Keep chart at 20 years for UI consistency
+      chartData.push({
+        year: i,
+        cumulativeNetGain: Math.round(cumulative),
+        cumulativeCost: totalInvestment,
+        annualGain: Math.round(adjustedGain)
+      });
+    }
   }
+
+  const finalPaybackPeriod = detectedPaybackYear || (totalInvestment / (totalAnnualGain - MAINTENANCE_COST));
 
   return {
     systemSizeKwp: Math.round(systemSizeKwp * 100) / 100,
@@ -211,7 +229,7 @@ export const calculateSimulation = (input: UserInput, solarData: SolarApiRespons
     annualMaintenance: MAINTENANCE_COST,
     totalAnnualGain: Math.round(totalAnnualGain),
     monthlyGain: Math.round(monthlyGain),
-    paybackPeriod: Math.round(paybackPeriod * 10) / 10,
+    paybackPeriod: Math.round(finalPaybackPeriod * 10) / 10,
     roiPercentage: Math.round(roiPercentage * 10) / 10,
     chartData,
     isSolarApiData,

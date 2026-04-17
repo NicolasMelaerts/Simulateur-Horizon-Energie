@@ -26,34 +26,68 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
             }}
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-            <XAxis dataKey="year" tick={{fontSize: 12, fill: '#627d98'}} tickLine={false} axisLine={false} />
-            <YAxis tickFormatter={(value) => `${value/1000}k€`} tick={{fontSize: 12, fill: '#627d98'}} tickLine={false} axisLine={false} />
+            <XAxis dataKey="year" tick={{fontSize: 11, fill: '#64748b'}} tickLine={false} axisLine={false} />
+            
+            {/* Left Y-axis for Cumulative Cashflow */}
+            <YAxis 
+              yAxisId="left"
+              tickFormatter={(v) => `${v/1000}k`} 
+              tick={{fontSize: 11, fill: '#64748b'}} 
+              tickLine={false} 
+              axisLine={false}
+              width={40}
+            />
+
+            {/* Right Y-axis for Annual Gain (Scaled separately for visibility) */}
+            <YAxis 
+              yAxisId="right"
+              orientation="right"
+              tickFormatter={(v) => `${v}€`}
+              tick={{fontSize: 10, fill: '#94a3b8'}}
+              tickLine={false}
+              axisLine={false}
+              width={50}
+            />
+
             <Tooltip 
               formatter={(value: number, name: string) => {
-                const label = name === 'cumulativeNetGain' ? 'Cashflow Cumulé' : 'Gain Annuel';
+                const isCumulative = name === 'cumulativeNetGain';
+                const label = isCumulative ? 'Cashflow Cumulé' : 'Gain de l\'année';
                 return [`${value.toLocaleString('fr-BE')} €`, label];
               }}
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontFamily: 'Montserrat' }}
-              itemStyle={{ color: '#102a43' }}
+              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontFamily: 'inherit' }}
             />
-            <ReferenceLine y={0} stroke="#9fb3c8" />
+            
+            <ReferenceLine yAxisId="left" y={0} stroke="#cbd5e1" strokeWidth={1} />
+            
             <ReferenceLine 
+              yAxisId="left"
               x={paybackYear} 
-              stroke="#76bc21" 
-              strokeDasharray="3 3"
+              stroke="#22c55e" 
+              strokeDasharray="4 4"
               strokeWidth={2}
-              label={{ value: 'Rentabilité', position: 'insideTopLeft', fill: '#76bc21', fontSize: 12, fontWeight: 600 }} 
+              label={{ value: 'Rentabilité', position: 'insideTopLeft', fill: '#15803d', fontSize: 10, fontWeight: 700 }} 
             />
-            {/* Horizon Blue Bars for Annual Gain */}
-            <Bar dataKey="annualGain" fill="#243b53" barSize={10} radius={[4, 4, 0, 0]} opacity={0.3} />
-            {/* Solar Green Line for Cumulative */}
+
+            {/* Horizon Blue Bars for Annual Gain (on secondary axis) */}
+            <Bar 
+              yAxisId="right"
+              dataKey="annualGain" 
+              fill="#0f172a" 
+              barSize={12} 
+              radius={[4, 4, 0, 0]} 
+              opacity={0.15} 
+            />
+
+            {/* Solar Green Line for Cumulative (on primary axis) */}
             <Line 
+              yAxisId="left"
               type="monotone" 
               dataKey="cumulativeNetGain" 
-              stroke="#76bc21" 
+              stroke="#22c55e" 
               strokeWidth={4}
               dot={false}
-              activeDot={{ r: 6, fill: '#76bc21', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#22c55e', stroke: '#fff', strokeWidth: 2 }}
             />
           </ComposedChart>
         </ResponsiveContainer>

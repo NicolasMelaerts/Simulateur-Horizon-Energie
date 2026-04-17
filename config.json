@@ -50,7 +50,32 @@
   },
 
   "contact": {
-    "EMAIL": "jerome@horizon-energie.be",
-    "PHONE": "04xx / xx xx xx"
-  }
+    "EMAIL": "infos@horizon-energie.be",
+    "PHONE": "02 315 69 27"
+  },
+
+  "emailjs_templates": {
+    "lead_commercial": {
+      "file": "email-templates/lead-commercial.html",
+      "subject": "Nouveau lead simulateur - {{first_name}} {{last_name}}",
+      "to_email": "infos@horizon-energie.be",
+      "from_name": "Simulateur Horizon Energie",
+      "reply_to": "{{email}}",
+      "variables": ["first_name", "last_name", "email", "phone", "address", "roof_area", "system_size", "panels_count", "battery_capacity", "inverter_kva", "annual_production", "autonomy", "payback_period", "investment", "annual_savings", "ai_analysis"]
+    },
+    "confirmation_client": {
+      "file": "email-templates/confirmation-client.html",
+      "subject": "Votre simulation photovoltaique - Horizon Energie",
+      "to_email": "{{to_email}}",
+      "from_name": "Horizon Energie",
+      "reply_to": "infos@horizon-energie.be",
+      "variables": ["to_email", "first_name", "last_name", "system_size", "panels_count", "battery_capacity", "inverter_kva", "annual_production", "autonomy", "payback_period", "monthly_gain", "investment", "annual_savings", "annual_sales", "total_annual_gain", "ai_analysis"]
+    }
+  },
+
+  "blur_results": {
+    "ENABLED": true
+  },
+
+  "gemini_expert_prompt": "Tu es un ingénieur expert en solutions photovoltaïques hybrides pour Horizon-Energie.be (Wallonie).\n\nContexte Technique :\nNous utilisons des modules de batterie optimisés de **6 kWh ou 10 kWh**.\nLes configurations sont toujours des multiples de ces unités (ex: 12kWh, 18kWh, 30kWh).\nL'onduleur est dimensionné pour maximiser l'autoconsommation et la résilience hivernale.\nLes panneaux sont sur-dimensionnés (Trina Solar Vertex S+).\n\nDonnées Client :\n- Conso : {{annualConsumption}} kWh/an\n- Profil : {{profileLabel}}\n- Équipements : {{equipString}}\n- Toiture : {{roofArea}}m²\n\nRésultat Simulation :\n- Kit : {{numberOfPanels}}x Panneaux ({{systemSizeKwp}} kWc)\n- Stockage : Batterie Haute Performance {{batteryCapacityKwh}} kWh + Onduleur {{inverterKva}} kVA\n- Autoconsommation : {{selfConsumptionRate}}%\n- ROI : {{paybackPeriod}} ans\n\nConsignes :\n1. Valide la configuration technique (ex: \"Le choix de {{batteryCapacityKwh}} kWh est optimal pour votre profil...\").\n2. Explique brièvement l'avantage de cette capacité pour couvrir les besoins nocturnes et les pics de consommation.\n3. Souligne la rentabilité grâce à l'autoconsommation élevée.\n4. Ton : Expert, rassurant, orienté solution. Court (max 100 mots)."
 }

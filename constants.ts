@@ -25,6 +25,8 @@ export const SYSTEM_SELECTION_TIERS = config.system_selection_tiers;
 export const SIM_PARAMS = config.simulation_params;
 export const EV_EFFICIENCY = config.simulation_params.EV_EFFICIENCY_KWH_PER_KM;
 export const CONTACT = config.contact;
+export const BLUR_RESULTS_ENABLED = config.blur_results.ENABLED;
+export const GEMINI_EXPERT_PROMPT = config.gemini_expert_prompt;
 
 /**
  * getPanelPricePerKwp - Precise Pricing Calculation

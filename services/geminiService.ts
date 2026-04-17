@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { SimulationResult, UserInput } from '../types';
+import { GEMINI_EXPERT_PROMPT } from '../constants';
 
 const getAiClient = () => {
   // @ts-ignore - Vite environment variables access
@@ -65,36 +66,20 @@ export const generateExpertAnalysis = async (input: UserInput, result: Simulatio
     if (input.hasElectricVehicle) equipments.push(`VE (${input.electricVehicleKm} km/an)`);
     if (input.hasHeatPump) equipments.push("Pompe à Chaleur");
     if (input.hasSwimmingPool) equipments.push("Piscine");
-    
-    const equipString = equipments.length > 0 ? equipments.join(", ") : "Standard";
-    
-    const prompt = `
-    Tu es un ingénieur expert en solutions photovoltaïques hybrides pour Horizon-Energie.be (Wallonie).
-    
-    Contexte Technique :
-    Nous utilisons des modules de batterie optimisés de **6 kWh ou 10 kWh**.
-    Les configurations sont toujours des multiples de ces unités (ex: 12kWh, 18kWh, 30kWh).
-    L'onduleur est dimensionné pour maximiser l'autoconsommation et la résilience hivernale.
-    Les panneaux sont sur-dimensionnés (Trina Solar Vertex S+).
 
-    Données Client :
-    - Conso : ${input.annualConsumption} kWh/an
-    - Profil : ${profileLabel}
-    - Équipements : ${equipString}
-    - Toiture : ${input.roofArea}m²
-    
-    Résultat Simulation :
-    - Kit : ${result.numberOfPanels}x Panneaux (${result.systemSizeKwp} kWc)
-    - Stockage : Batterie Haute Performance ${result.batteryCapacityKwh} kWh + Onduleur ${result.inverterKva} kVA
-    - Autoconsommation : ${result.selfConsumptionRate}%
-    - ROI : ${result.paybackPeriod} ans
-    
-    Consignes :
-    1. Valide la configuration technique (ex: "Le choix de ${result.batteryCapacityKwh} kWh est optimal pour votre profil...").
-    2. Explique brièvement l'avantage de cette capacité pour couvrir les besoins nocturnes et les pics de consommation.
-    3. Souligne la rentabilité grâce à l'autoconsommation élevée.
-    4. Ton : Expert, rassurant, orienté solution. Court (max 100 mots).
-    `;
+    const equipString = equipments.length > 0 ? equipments.join(", ") : "Standard";
+
+    const prompt = GEMINI_EXPERT_PROMPT
+      .replace(/\{\{annualConsumption\}\}/g, String(input.annualConsumption))
+      .replace(/\{\{profileLabel\}\}/g, profileLabel)
+      .replace(/\{\{equipString\}\}/g, equipString)
+      .replace(/\{\{roofArea\}\}/g, String(input.roofArea))
+      .replace(/\{\{numberOfPanels\}\}/g, String(result.numberOfPanels))
+      .replace(/\{\{systemSizeKwp\}\}/g, String(result.systemSizeKwp))
+      .replace(/\{\{batteryCapacityKwh\}\}/g, String(result.batteryCapacityKwh))
+      .replace(/\{\{inverterKva\}\}/g, String(result.inverterKva))
+      .replace(/\{\{selfConsumptionRate\}\}/g, String(result.selfConsumptionRate))
+      .replace(/\{\{paybackPeriod\}\}/g, String(result.paybackPeriod));
 
     if (!ai) {
       return "Ceci est une analyse générée en mode démo. En conditions réelles, l'IA d'Horizon-Energie analyse précisément vos données pour optimiser votre rentabilité.";
@@ -111,7 +96,7 @@ export const generateExpertAnalysis = async (input: UserInput, result: Simulatio
     return response.text || "Analyse en cours...";
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
-    return "L'analyse experte est temporairement indisponible. Le site n'est pas déployé sur un serveur. Sur serveur, Gemini est utiliser pour fournir une analyse en temps que expert en solutions photovoltaïques hybrides pour Horizon-Energie.be (Wallonie).";
+    return "L'analyse experte est temporairement indisponible. Veuillez reessayer plus tard ou nous contacter directement.";
   }
 };
 

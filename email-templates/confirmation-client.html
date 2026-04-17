@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon Energie - Votre Simulation</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: Arial, sans-serif;">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <!-- CONTENEUR PRINCIPAL -->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0;">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td style="background-color: #0f172a; padding: 30px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: bold;">
+                                Horizon <span style="color: #22c55e;">Energie</span>
+                            </h1>
+                            <p style="margin: 5px 0 0; color: #22c55e; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">
+                                Votre energie, notre defi.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- CONTENU -->
+                    <tr>
+                        <td style="padding: 20px;">
+
+                            <!-- GREETING -->
+                            <p style="font-size: 18px; color: #0f172a; margin: 0 0 5px;">
+                                Bonjour <strong>{{first_name}}</strong>,
+                            </p>
+                            <p style="font-size: 14px; color: #64748b; margin: 0 0 25px; line-height: 1.6;">
+                                Merci d'avoir utilise notre simulateur photovoltaique ! Voici le recapitulatif complet de votre simulation personnalisee.
+                            </p>
+
+                            <!-- CHIFFRES CLES -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="15" style="background-color: #0f172a; border-radius: 12px; color: #ffffff;">
+                                <tr>
+                                    <td align="center" width="33%">
+                                        <div style="font-size: 9px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">ROI</div>
+                                        <div style="font-size: 24px; font-weight: bold; color: #22c55e;">{{payback_period}} ans</div>
+                                    </td>
+                                    <td align="center" width="33%">
+                                        <div style="font-size: 9px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Gain mensuel</div>
+                                        <div style="font-size: 24px; font-weight: bold; color: #ffffff;">+{{monthly_gain}} EUR</div>
+                                    </td>
+                                    <td align="center" width="33%">
+                                        <div style="font-size: 9px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Autonomie</div>
+                                        <div style="font-size: 24px; font-weight: bold; color: #22c55e;">{{autonomy}}%</div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- SECTION KIT -->
+                            <h2 style="font-size: 14px; color: #0f172a; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; margin-top: 30px; text-transform: uppercase;">
+                                Votre kit photovoltaique hybride
+                            </h2>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="5">
+                                <tr>
+                                    <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;" width="33%">
+                                        <div style="font-size: 9px; color: #64748b; font-weight: bold; text-transform: uppercase;">Panneaux</div>
+                                        <div style="font-size: 16px; font-weight: bold; color: #0f172a;">{{panels_count}}x</div>
+                                        <div style="font-size: 10px; color: #22c55e; font-weight: bold;">{{system_size}} kWc</div>
+                                    </td>
+                                    <td width="5"></td>
+                                    <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;" width="33%">
+                                        <div style="font-size: 9px; color: #64748b; font-weight: bold; text-transform: uppercase;">Batterie</div>
+                                        <div style="font-size: 16px; font-weight: bold; color: #0f172a;">{{battery_capacity}} kWh</div>
+                                        <div style="font-size: 10px; color: #64748b;">Haute Densite</div>
+                                    </td>
+                                    <td width="5"></td>
+                                    <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px;" width="33%">
+                                        <div style="font-size: 9px; color: #64748b; font-weight: bold; text-transform: uppercase;">Onduleur</div>
+                                        <div style="font-size: 16px; font-weight: bold; color: #0f172a;">{{inverter_kva}} kVA</div>
+                                        <div style="font-size: 10px; color: #64748b;">Intelligent</div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- SECTION FINANCIER -->
+                            <h2 style="font-size: 14px; color: #0f172a; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; margin-top: 30px; text-transform: uppercase;">
+                                Bilan financier
+                            </h2>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #64748b;">Investissement total (HTVA)</td>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #0f172a; font-weight: bold;" align="right">{{investment}} EUR</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #64748b;">Production annuelle estimee</td>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #0f172a; font-weight: bold;" align="right">{{annual_production}} kWh</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #64748b;">Economie annuelle</td>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #15803d; font-weight: bold;" align="right">+{{annual_savings}} EUR</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #64748b;">Revente injection</td>
+                                    <td style="padding: 8px 0; font-size: 13px; color: #ea580c; font-weight: bold;" align="right">+{{annual_sales}} EUR</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border-top: 1px dashed #e2e8f0;"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px 0; font-size: 15px; color: #0f172a; font-weight: bold;">Gain annuel total</td>
+                                    <td style="padding: 10px 0; font-size: 18px; color: #15803d; font-weight: bold;" align="right">+{{total_annual_gain}} EUR/an</td>
+                                </tr>
+                            </table>
+
+                            <!-- SECTION IA -->
+                            <h2 style="font-size: 14px; color: #0f172a; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; margin-top: 30px; text-transform: uppercase;">
+                                Analyse Expert Horizon Energie
+                            </h2>
+                            <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; color: #475569; font-size: 13px; line-height: 1.6; font-style: italic;">
+                                {{ai_analysis}}
+                            </div>
+
+                            <!-- CTA -->
+                            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: center;">
+                                <p style="font-size: 16px; font-weight: bold; color: #0f172a; margin: 0 0 8px;">Interesse par cette installation ?</p>
+                                <p style="font-size: 13px; color: #64748b; margin: 0 0 15px;">Un conseiller Horizon Energie peut vous accompagner pour concretiser votre projet.</p>
+                                <a href="mailto:infos@horizon-energie.be?subject=Simulation%20photovoltaique%20-%20{{first_name}}%20{{last_name}}" style="display: inline-block; background-color: #22c55e; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px;">
+                                    Contactez-nous
+                                </a>
+                                <p style="font-size: 13px; color: #64748b; margin: 12px 0 0;">02 315 69 27 | infos@horizon-energie.be</p>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="background-color: #f1f5f9; padding: 20px; text-align: center; color: #64748b; font-size: 11px;">
+                            Horizon Energie - horizon-energie.be<br>
+                            <span style="font-size: 10px; color: #94a3b8;">Cette simulation est une estimation indicative. Les valeurs reelles peuvent varier selon les conditions d'installation.</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
