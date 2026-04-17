@@ -37,10 +37,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
   const [thinkingStep, setThinkingStep] = useState(0);
 
   const thinkingMessages = [
-    "Analyse de votre surface de toiture...",
     "Notre expert IA Horizon est en train d'analyser votre situation...",
-    "Optimisation du dimensionnement de votre installation...",
-    "Calcul du retour sur investissement...",
+    "Analyse de votre surface de toiture...",
     "Finalisation de l'expertise Horizon..."
   ];
 
