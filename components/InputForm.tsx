@@ -39,7 +39,14 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
   
   // Auto-scroll to top when step changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    return () => clearTimeout(timer);
   }, [step]);
 
   const [formData, setFormData] = useState<UserInput>({
