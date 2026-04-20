@@ -192,17 +192,17 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
           {/* Kit Details */}
           <div className="lg:col-span-2 bg-white/5 rounded-2xl p-4 md:p-6 border border-white/10 flex flex-col justify-center">
             <p className="text-horizon-300 text-xs font-bold uppercase tracking-widest mb-4">Votre kit photovoltaïque hybride</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 md:gap-2">
                 <div className="flex flex-col">
                     <p className="text-2xl font-bold text-white">{result.numberOfPanels} <span className="text-sm font-normal text-horizon-300">Panneaux</span></p>
                     <p className="text-xs text-solar-400">Trina Solar {result.systemSizeKwp} kWc</p>
                 </div>
-                <div className="hidden sm:block w-px h-10 bg-white/10 mx-auto"></div>
+                <div className="hidden sm:block w-px h-10 bg-white/10 mx-2"></div>
                 <div className="flex flex-col border-t border-white/5 pt-4 sm:border-0 sm:pt-0">
                     <p className="text-2xl font-bold text-white">{result.batteryCapacityKwh} <span className="text-sm font-normal text-horizon-300">kWh</span></p>
                     <p className="text-xs text-solar-400">Stockage Haute Densité</p>
                 </div>
-                <div className="hidden sm:block w-px h-10 bg-white/10 mx-auto"></div>
+                <div className="hidden sm:block w-px h-10 bg-white/10 mx-2"></div>
                 <div className="flex flex-col border-t border-white/5 pt-4 sm:border-0 sm:pt-0">
                     <p className="text-2xl font-bold text-white">{result.inverterKva} <span className="text-sm font-normal text-horizon-300">kVA</span></p>
                     <p className="text-xs text-solar-400">Onduleur Intelligent</p>

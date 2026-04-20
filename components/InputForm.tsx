@@ -37,6 +37,11 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
   const [step, setStep] = useState<number>(1);
   const [numRoofSegments, setNumRoofSegments] = useState<number>(1);
   
+  // Auto-scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
   const [formData, setFormData] = useState<UserInput>({
     annualConsumption: 5000,
     address: '',

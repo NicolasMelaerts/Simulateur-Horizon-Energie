@@ -15,6 +15,11 @@ const App: React.FC = () => {
   const [userInput, setUserInput] = useState<UserInput | null>(null);
   const [emailUnlocked, setEmailUnlocked] = useState<boolean>(false);
 
+  // Auto-scroll to top on state change
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [result]);
+
   const handleSimulate = async (input: UserInput) => {
     setLoading(true);
     setResult(null);
