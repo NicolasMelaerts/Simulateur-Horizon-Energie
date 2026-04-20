@@ -20,8 +20,8 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
             data={data}
             margin={{
               top: 10,
-              right: 30,
-              left: 0,
+              right: 5,
+              left: -15,
               bottom: 0,
             }}
           >

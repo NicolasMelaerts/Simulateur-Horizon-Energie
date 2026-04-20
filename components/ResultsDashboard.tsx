@@ -6,6 +6,7 @@ import { generateStructuredPdf, downloadPdf } from '../services/pdfService';
 import emailjs from '@emailjs/browser';
 import { sendClientConfirmationEmail } from '../services/clientEmailService';
 import { pushToCrm } from '../services/crmService';
+import { ENABLE_EMAIL_SENDING, ENABLE_CRM_PUSH } from '../constants';
 
 interface ResultsDashboardProps {
   result: SimulationResult;
@@ -107,11 +108,24 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
   const handleSendQuoteRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSendingEmail(true);
-    const success = await sendLeadEmail(formData.firstName, formData.lastName, formData.phone, formData.email);
+    
+    let success = true;
+    if (ENABLE_EMAIL_SENDING) {
+      success = await sendLeadEmail(formData.firstName, formData.lastName, formData.phone, formData.email);
+    } else {
+      console.log("Envoi d'email désactivé dans config.json");
+    }
+
     if (success) {
       setFormSubmitted(true);
-      sendClientConfirmationEmail(formData.firstName, formData.lastName, formData.email, result, aiAnalysis);
-      pushToCrm(formData.firstName, formData.lastName, formData.email, formData.phone, result, userInput);
+      if (ENABLE_EMAIL_SENDING) {
+        sendClientConfirmationEmail(formData.firstName, formData.lastName, formData.email, result, aiAnalysis);
+      }
+      if (ENABLE_CRM_PUSH) {
+        pushToCrm(formData.firstName, formData.lastName, formData.email, formData.phone, result, userInput);
+      } else {
+        console.log("Push CRM désactivé dans config.json");
+      }
     }
     setIsSendingEmail(false);
   };
@@ -119,9 +133,20 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
   const handleUnlockSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUnlocking(true);
-    await sendLeadEmail(unlockFirstName, unlockLastName, unlockPhone, unlockEmail);
-    sendClientConfirmationEmail(unlockFirstName, unlockLastName, unlockEmail, result, aiAnalysis);
-    pushToCrm(unlockFirstName, unlockLastName, unlockEmail, unlockPhone, result, userInput);
+    
+    if (ENABLE_EMAIL_SENDING) {
+      await sendLeadEmail(unlockFirstName, unlockLastName, unlockPhone, unlockEmail);
+      sendClientConfirmationEmail(unlockFirstName, unlockLastName, unlockEmail, result, aiAnalysis);
+    } else {
+      console.log("Envoi d'email désactivé dans config.json");
+    }
+
+    if (ENABLE_CRM_PUSH) {
+      pushToCrm(unlockFirstName, unlockLastName, unlockEmail, unlockPhone, result, userInput);
+    } else {
+      console.log("Push CRM désactivé dans config.json");
+    }
+
     setIsUnlocking(false);
     onEmailUnlock();
   };
@@ -165,20 +190,20 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
           </div>
 
           {/* Kit Details */}
-          <div className="lg:col-span-2 bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col justify-center">
-            <p className="text-horizon-300 text-xs font-bold uppercase tracking-widest mb-3">Votre kit photovoltaïque hybride</p>
-            <div className="flex items-center space-x-4">
-                <div className="flex-1">
+          <div className="lg:col-span-2 bg-white/5 rounded-2xl p-4 md:p-6 border border-white/10 flex flex-col justify-center">
+            <p className="text-horizon-300 text-xs font-bold uppercase tracking-widest mb-4">Votre kit photovoltaïque hybride</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 items-center">
+                <div className="flex flex-col">
                     <p className="text-2xl font-bold text-white">{result.numberOfPanels} <span className="text-sm font-normal text-horizon-300">Panneaux</span></p>
                     <p className="text-xs text-solar-400">Trina Solar {result.systemSizeKwp} kWc</p>
                 </div>
-                <div className="w-px h-10 bg-white/10"></div>
-                <div className="flex-1">
+                <div className="hidden sm:block w-px h-10 bg-white/10 mx-auto"></div>
+                <div className="flex flex-col border-t border-white/5 pt-4 sm:border-0 sm:pt-0">
                     <p className="text-2xl font-bold text-white">{result.batteryCapacityKwh} <span className="text-sm font-normal text-horizon-300">kWh</span></p>
                     <p className="text-xs text-solar-400">Stockage Haute Densité</p>
                 </div>
-                <div className="w-px h-10 bg-white/10"></div>
-                <div className="flex-1">
+                <div className="hidden sm:block w-px h-10 bg-white/10 mx-auto"></div>
+                <div className="flex flex-col border-t border-white/5 pt-4 sm:border-0 sm:pt-0">
                     <p className="text-2xl font-bold text-white">{result.inverterKva} <span className="text-sm font-normal text-horizon-300">kVA</span></p>
                     <p className="text-xs text-solar-400">Onduleur Intelligent</p>
                 </div>
@@ -198,14 +223,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
               <h3 className="text-xl font-bold text-horizon-900 mb-2">Découvrez vos résultats détaillés</h3>
               <p className="text-sm text-horizon-500 mb-5">Remplissez vos coordonnées pour accéder à l'analyse complète de votre simulation photovoltaïque.</p>
               <form onSubmit={handleUnlockSubmit} className="flex flex-col gap-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     type="text"
                     required
                     value={unlockFirstName}
                     onChange={(e) => setUnlockFirstName(e.target.value)}
                     placeholder="Prénom"
-                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none w-full"
                   />
                   <input
                     type="text"
@@ -213,7 +238,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                     value={unlockLastName}
                     onChange={(e) => setUnlockLastName(e.target.value)}
                     placeholder="Nom"
-                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none w-full"
                   />
                 </div>
                 <input
@@ -422,7 +447,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                      </div>
                    ) : (
                      <form onSubmit={handleSendQuoteRequest} className="space-y-3">
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <div>
                             <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Prénom</label>
                             <input required name="firstName" value={formData.firstName} onChange={handleInputChange} type="text" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="Jean" />

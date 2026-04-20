@@ -26,6 +26,8 @@ export const SIM_PARAMS = config.simulation_params;
 export const EV_EFFICIENCY = config.simulation_params.EV_EFFICIENCY_KWH_PER_KM;
 export const CONTACT = config.contact;
 export const BLUR_RESULTS_ENABLED = config.blur_results.ENABLED;
+export const ENABLE_EMAIL_SENDING = config.integrations.ENABLE_EMAIL_SENDING;
+export const ENABLE_CRM_PUSH = config.integrations.ENABLE_CRM_PUSH;
 export const GEMINI_EXPERT_PROMPT = config.gemini_expert_prompt;
 
 /**
