@@ -168,7 +168,9 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSimulate(formData);
+    if (step === 2) {
+      onSimulate(formData);
+    }
   };
 
   return (
@@ -181,7 +183,15 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
         ></div>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+      <form 
+        onSubmit={handleSubmit} 
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && ['INPUT', 'SELECT'].includes((e.target as HTMLElement).tagName)) {
+            e.preventDefault();
+          }
+        }}
+        className="p-6 md:p-8 space-y-6"
+      >
         
         {/* STEP 1: PROJET & LOCALISATION */}
         <div className={step === 1 ? 'block animate-fade-in' : 'hidden'}>
