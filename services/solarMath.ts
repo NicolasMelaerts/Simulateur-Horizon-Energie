@@ -221,9 +221,9 @@ export const calculateSimulation = (input: UserInput, solarData: SolarApiRespons
     selfConsumedEnergy: Math.round(finalConsumedEnergy), 
     injectedEnergy: Math.round(injectedEnergy), 
     
-    capexPanels,
-    capexBattery,
-    totalInvestment,
+    capexPanels: Math.round(capexPanels),
+    capexBattery: Math.round(capexBattery),
+    totalInvestment: Math.round(totalInvestment),
     annualSavings: Math.round(annualSavings),
     annualSales: Math.round(annualSales),
     annualMaintenance: MAINTENANCE_COST,

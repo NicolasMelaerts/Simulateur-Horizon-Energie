@@ -12,7 +12,7 @@ const COLORS = {
 
 // Safe number formatter for jsPDF (no special unicode chars)
 const fmt = (n: number): string => {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 let logoBase64: string | null = null;
