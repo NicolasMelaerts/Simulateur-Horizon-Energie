@@ -65,7 +65,10 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    const pdf = await generateStructuredPdf(result, userInput, aiAnalysis);
+    const pdf = await generateStructuredPdf(result, userInput, aiAnalysis, {
+      firstName: formData.firstName || unlockFirstName,
+      lastName: formData.lastName || unlockLastName
+    });
     const name = formData.lastName || unlockLastName || 'Simulation';
     downloadPdf(pdf, `Horizon_Energie_${name}.pdf`);
     setIsGeneratingPdf(false);
