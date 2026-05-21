@@ -5,7 +5,7 @@ import { generateExpertAnalysis, getCoordinatesFromAddress } from './services/ge
 import { fetchSolarData } from './services/solarApiService';
 import { InputForm } from './components/InputForm';
 import { ResultsDashboard } from './components/ResultsDashboard';
-import { BLUR_RESULTS_ENABLED } from './constants';
+import { BLUR_RESULTS_ENABLED, META_PIXEL_ID } from './constants';
 
 const App: React.FC = () => {
   const [result, setResult] = useState<SimulationResult | null>(null);
@@ -14,6 +14,30 @@ const App: React.FC = () => {
   const [loadingAi, setLoadingAi] = useState<boolean>(false);
   const [userInput, setUserInput] = useState<UserInput | null>(null);
   const [emailUnlocked, setEmailUnlocked] = useState<boolean>(false);
+
+  // Initialize Meta Pixel if configured
+  React.useEffect(() => {
+    if (META_PIXEL_ID) {
+      // Dynamic injection of standard Meta Pixel script
+      const fbScript = document.createElement('script');
+      fbScript.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=f.queue=[];n.push=n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${META_PIXEL_ID}');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(fbScript);
+
+      // NoScript fallback
+      const fbNoScript = document.createElement('noscript');
+      fbNoScript.innerHTML = `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1" />`;
+      document.body.appendChild(fbNoScript);
+    }
+  }, []);
 
   // Auto-scroll to top on state change (Result changed)
   React.useEffect(() => {
