@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SimulationResult, UserInput } from '../types';
 import { SimulationCharts } from './SimulationCharts';
 import ReactMarkdown from 'react-markdown';
-import { generateStructuredPdf, downloadPdf } from '../services/pdfService';
+import { generateStructuredPdf, downloadPdf, getPdfRawBase64 } from '../services/pdfService';
 import emailjs from '@emailjs/browser';
 import { sendClientConfirmationEmail } from '../services/clientEmailService';
 import { pushToCrm } from '../services/crmService';
@@ -131,7 +131,17 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
         sendClientConfirmationEmail(formData.firstName, formData.lastName, formData.email, result, aiAnalysis);
       }
       if (ENABLE_CRM_PUSH) {
-        pushToCrm(formData.firstName, formData.lastName, formData.email, formData.phone, result, userInput);
+        let pdfBase64: string | undefined = undefined;
+        try {
+          const pdfBytes = await generateStructuredPdf(result, userInput, aiAnalysis, {
+            firstName: formData.firstName,
+            lastName: formData.lastName
+          });
+          pdfBase64 = getPdfRawBase64(pdfBytes);
+        } catch (err) {
+          console.error("Erreur lors de la génération du PDF pour le CRM:", err);
+        }
+        pushToCrm(formData.firstName, formData.lastName, formData.email, formData.phone, result, userInput, pdfBase64);
       } else {
         console.log("Push CRM désactivé dans config.json");
       }
@@ -151,7 +161,17 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
     }
 
     if (ENABLE_CRM_PUSH) {
-      pushToCrm(unlockFirstName, unlockLastName, unlockEmail, unlockPhone, result, userInput);
+      let pdfBase64: string | undefined = undefined;
+      try {
+        const pdfBytes = await generateStructuredPdf(result, userInput, aiAnalysis, {
+          firstName: unlockFirstName,
+          lastName: unlockLastName
+        });
+        pdfBase64 = getPdfRawBase64(pdfBytes);
+      } catch (err) {
+        console.error("Erreur lors de la génération du PDF pour le CRM:", err);
+      }
+      pushToCrm(unlockFirstName, unlockLastName, unlockEmail, unlockPhone, result, userInput, pdfBase64);
     } else {
       console.log("Push CRM désactivé dans config.json");
     }

@@ -6,7 +6,8 @@ export const pushToCrm = async (
   email: string,
   phone: string,
   result: SimulationResult,
-  userInput: UserInput
+  userInput: UserInput,
+  pdfBase64?: string
 ): Promise<boolean> => {
   try {
     const WEBHOOK_URL = import.meta.env.VITE_CRM_WEBHOOK_URL;
@@ -65,7 +66,11 @@ export const pushToCrm = async (
         totalAnnualGain: result.totalAnnualGain,
         estimatedAnnualProduction: result.estimatedAnnualProduction,
         autonomyPercentage: result.autonomyPercentage
-      }
+      },
+      pdf: pdfBase64 ? {
+        base64: pdfBase64,
+        filename: `Horizon_Energie_${lastName || 'Simulation'}.pdf`
+      } : undefined
     };
 
     const response = await fetch(WEBHOOK_URL, {

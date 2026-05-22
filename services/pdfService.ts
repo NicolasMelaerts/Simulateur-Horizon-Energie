@@ -286,3 +286,12 @@ export const getPdfBase64 = async (pdfBytes: Uint8Array) => {
   }
   return 'data:application/pdf;base64,' + window.btoa(binary);
 };
+
+export const getPdfRawBase64 = (pdfBytes: Uint8Array): string => {
+  let binary = '';
+  const len = pdfBytes.byteLength;
+  for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(pdfBytes[i]);
+  }
+  return window.btoa(binary);
+};
