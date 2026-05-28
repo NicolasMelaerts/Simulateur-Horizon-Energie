@@ -37,6 +37,8 @@
     { "maxCapacity": 99999, "pricePerKwh": 200 }
   ],
   "system_selection_tiers": [
+    { "maxConsumption": 3500, "batteryKwh": 6, "inverterKva": 3, "maxPanels": 10 },
+    { "maxConsumption": 5000, "batteryKwh": 10, "inverterKva": 5, "maxPanels": 16 },
     { "maxConsumption": 6500, "batteryKwh": 12, "inverterKva": 6, "maxPanels": 20 },
     { "maxConsumption": 11000, "batteryKwh": 18, "inverterKva": 8, "maxPanels": 26 },
     { "maxConsumption": 99999, "batteryKwh": 30, "inverterKva": 12, "maxPanels": 36 }
