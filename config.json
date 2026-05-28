@@ -74,12 +74,12 @@
   },
 
   "blur_results": {
-    "ENABLED": false
+    "ENABLED": true
   },
 
   "integrations": {
-    "ENABLE_EMAIL_SENDING": false,
-    "ENABLE_CRM_PUSH": false,
+    "ENABLE_EMAIL_SENDING": true,
+    "ENABLE_CRM_PUSH": true,
     "META_PIXEL_ID": ""
   },
 
