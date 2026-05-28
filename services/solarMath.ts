@@ -146,15 +146,10 @@ export const calculateSimulation = (input: UserInput, solarData: SolarApiRespons
   const pricePerKwp = getPanelPricePerKwp(systemSizeKwp);
   const capexPanels = systemSizeKwp * pricePerKwp;
   
-  // CAPEX Battery (Using tiers from config)
-  let capexBattery = 0;
-  const batteryTier = BATTERY_PRICING.find(b => b.capacity === batteryCapacityKwh);
-  if (batteryTier) {
-      capexBattery = batteryTier.price;
-  } else {
-      // Fallback to per-kWh pricing if no exact tier match
-      capexBattery = batteryCapacityKwh * 450; 
-  }
+  // CAPEX Battery (Per-kWh rate based on capacity tier from config)
+  const batteryTier = BATTERY_PRICING.find(b => batteryCapacityKwh <= b.maxCapacity)
+                      || BATTERY_PRICING[BATTERY_PRICING.length - 1];
+  const capexBattery = batteryCapacityKwh * batteryTier.pricePerKwh;
 
   const totalInvestment = capexPanels + capexBattery;
   const injectedEnergy = estimatedAnnualProduction - finalConsumedEnergy;

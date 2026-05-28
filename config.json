@@ -32,9 +32,9 @@
     { "kwp": 30, "price": 700 }
   ],
   "battery_pricing_tiers": [
-    { "capacity": 12, "price": 5400 },
-    { "capacity": 18, "price": 7650 },
-    { "capacity": 30, "price": 12000 }
+    { "maxCapacity": 10, "pricePerKwh": 275 },
+    { "maxCapacity": 20, "pricePerKwh": 225 },
+    { "maxCapacity": 99999, "pricePerKwh": 200 }
   ],
   "system_selection_tiers": [
     { "maxConsumption": 6500, "batteryKwh": 12, "inverterKva": 6, "maxPanels": 20 },
@@ -74,12 +74,12 @@
   },
 
   "blur_results": {
-    "ENABLED": true
+    "ENABLED": false
   },
 
   "integrations": {
-    "ENABLE_EMAIL_SENDING": true,
-    "ENABLE_CRM_PUSH": true,
+    "ENABLE_EMAIL_SENDING": false,
+    "ENABLE_CRM_PUSH": false,
     "META_PIXEL_ID": ""
   },
 
