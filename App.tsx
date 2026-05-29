@@ -109,8 +109,8 @@ const App: React.FC = () => {
       <header className="bg-white dark:bg-horizon-800 shadow-sm border-b border-gray-200 dark:border-horizon-700 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            {/* Logo Horizon-Energie.be */}
-            <div className="flex items-center">
+            {/* Logo Horizon-Energie.be — target="_top" pour sortir de l'iframe */}
+            <a href="https://horizon-energie.be" target="_top" aria-label="Retour vers horizon-energie.be" className="flex items-center">
               <img
                 src="./logo-horizon-dark.png"
                 alt="Horizon Energie"
@@ -121,7 +121,7 @@ const App: React.FC = () => {
                 alt="Horizon Energie"
                 className="h-16 w-auto hidden dark:block"
               />
-            </div>
+            </a>
           </div>
           <div className="hidden md:block text-right">
              <div className="inline-flex flex-col items-end">
