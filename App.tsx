@@ -18,7 +18,7 @@ const App: React.FC = () => {
   // Initialize Meta Pixel if configured
   React.useEffect(() => {
     if (META_PIXEL_ID) {
-      // Dynamic injection of standard Meta Pixel script
+      // Init only — the parent wrapper page fires PageView; this iframe keeps fbq defined so the Lead event can fire.
       const fbScript = document.createElement('script');
       fbScript.innerHTML = `
         !function(f,b,e,v,n,t,s)
@@ -28,14 +28,8 @@ const App: React.FC = () => {
         s.parentNode.insertBefore(t,s)}(window, document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '${META_PIXEL_ID}');
-        fbq('track', 'PageView');
       `;
       document.head.appendChild(fbScript);
-
-      // NoScript fallback
-      const fbNoScript = document.createElement('noscript');
-      fbNoScript.innerHTML = `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1" />`;
-      document.body.appendChild(fbNoScript);
     }
   }, []);
 
