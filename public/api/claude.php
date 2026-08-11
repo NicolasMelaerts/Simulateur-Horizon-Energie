@@ -45,34 +45,41 @@ $payload = [
     ]
 ];
 
-$ch = curl_init("https://api.anthropic.com/v1/messages");
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "Content-Type: application/json",
-    "x-api-key: " . $apiKey,
-    "anthropic-version: 2023-06-01"
-]);
+// Use file_get_contents instead of cURL to be compatible with all hosting servers (like One.com/OVH)
+// that may have the PHP cURL extension disabled.
+$options = [
+    "http" => [
+        "method" => "POST",
+        "header" => "Content-Type: application/json\r\n" .
+                    "x-api-key: " . $apiKey . "\r\n" .
+                    "anthropic-version: 2023-06-01\r\n",
+        "content" => json_encode($payload),
+        "ignore_errors" => true, // Allows us to see the error payload from Anthropic if the status is not 200
+        "timeout" => 15
+    ]
+];
 
-// Set timeout
-curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+$context = stream_context_create($options);
+$response = @file_get_contents("https://api.anthropic.com/v1/messages", false, $context);
 
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-if (curl_errno($ch)) {
-    $error_msg = curl_error($ch);
+if ($response === false) {
+    $error = error_get_last();
     http_response_code(500);
-    echo json_encode(["error" => "Curl error: " . $error_msg]);
-    curl_close($ch);
+    echo json_encode(["error" => "HTTP request failed: " . ($error['message'] ?? 'Unknown error')]);
     exit;
 }
 
-curl_close($ch);
+// Extract HTTP status code from response headers
+$status_code = 500;
+if (isset($http_response_header) && count($http_response_header) > 0) {
+    preg_match('{HTTP\/\S*\s(\d\d\d)}', $http_response_header[0], $match);
+    if (isset($match[1])) {
+        $status_code = (int)$match[1];
+    }
+}
 
-if ($httpCode !== 200) {
-    http_response_code($httpCode);
+if ($status_code !== 200) {
+    http_response_code($status_code);
     echo $response;
     exit;
 }
