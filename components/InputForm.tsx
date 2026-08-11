@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { UserInput, CardinalDirection, UserProfile } from '../types';
 import { EV_EFFICIENCY } from '../constants';
 import { fetchSolarData } from '../services/solarApiService';
-import { getCoordinatesFromAddress, estimateRoofWithAI } from '../services/geminiService';
+import { getCoordinatesFromAddress } from '../services/claudeService';
 
 interface InputFormProps {
   onSimulate: (data: UserInput) => void;

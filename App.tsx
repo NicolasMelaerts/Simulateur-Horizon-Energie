@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserInput, SimulationResult } from './types';
 import { calculateSimulation } from './services/solarMath';
-import { generateExpertAnalysis, getCoordinatesFromAddress } from './services/geminiService';
+import { generateExpertAnalysis, getCoordinatesFromAddress } from './services/claudeService';
 import { fetchSolarData } from './services/solarApiService';
 import { InputForm } from './components/InputForm';
 import { ResultsDashboard } from './components/ResultsDashboard';

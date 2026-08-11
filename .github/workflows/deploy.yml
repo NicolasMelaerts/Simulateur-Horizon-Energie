@@ -22,10 +22,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Inject Claude API Key into PHP proxy
+        run: |
+          node -e "const fs = require('fs'); const file = 'public/api/claude.php'; fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('CLAUDE_API_KEY_PLACEHOLDER', process.env.CLAUDE_API_KEY));"
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+
       - name: Build the project
         run: npm run build
         env:
-          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
           VITE_CRM_WEBHOOK_URL: ${{ secrets.VITE_CRM_WEBHOOK_URL }}
           VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
           VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
