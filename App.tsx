@@ -125,7 +125,7 @@ const App: React.FC = () => {
           </div>
           <div className="hidden md:block text-right">
              <div className="inline-flex flex-col items-end">
-               <div className="text-sm font-extrabold text-horizon-900 dark:text-solar-300 bg-solar-50 dark:bg-solar-950/20 px-4 py-1.5 rounded-full border border-solar-100 dark:border-solar-900/50 shadow-sm transition-colors">
+               <div className="text-sm font-extrabold text-horizon-900 dark:text-solar-300 bg-solar-50 dark:bg-solar-900/20 px-4 py-1.5 rounded-full border border-solar-100 dark:border-solar-900/50 shadow-sm transition-colors">
                  Simulateur Horizon Énergie
                </div>
                <div className="text-[10px] font-bold text-horizon-400 dark:text-horizon-500 mt-1 uppercase tracking-widest mr-2">Wallonie & Bruxelles</div>

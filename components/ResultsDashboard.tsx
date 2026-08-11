@@ -266,7 +266,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
         {blurred && (
           <div className="absolute inset-0 z-20 flex items-start justify-center pt-16">
             <div className="bg-white/95 dark:bg-horizon-800/95 backdrop-blur-sm border border-horizon-200 dark:border-horizon-700 rounded-2xl shadow-2xl p-8 max-w-lg mx-4 text-center transition-colors">
-              <div className="w-14 h-14 bg-solar-100 dark:bg-solar-950/40 text-solar-600 dark:text-solar-400 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 bg-solar-100 dark:bg-solar-900/40 text-solar-600 dark:text-solar-400 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
               </div>
               <h3 className="text-xl font-bold text-horizon-900 dark:text-white mb-2">Découvrez vos résultats détaillés</h3>
@@ -382,7 +382,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   </div>
 
                   <div className="mt-4">
-                    <div className="p-3 bg-solar-50 dark:bg-solar-950/20 rounded-xl border border-solar-200 dark:border-solar-800/40 flex flex-col justify-center items-center text-center">
+                    <div className="p-3 bg-solar-50 dark:bg-solar-900/20 rounded-xl border border-solar-200 dark:border-solar-800/40 flex flex-col justify-center items-center text-center">
                       <p className="text-[10px] font-bold text-solar-700 dark:text-solar-300 uppercase tracking-wide mb-1">Électricité Économisée</p>
                       <p className="text-2xl font-extrabold text-solar-600 dark:text-solar-400 leading-none">{result.selfConsumedEnergy.toLocaleString()} <span className="text-sm font-bold">kWh</span></p>
                     </div>
@@ -549,7 +549,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   type="button"
                   onClick={handleDownloadPdf}
                   disabled={isGeneratingPdf}
-                  className="w-full py-3 px-4 bg-white dark:bg-horizon-900 border-2 border-solar-500 text-solar-600 dark:text-solar-400 hover:bg-solar-50 dark:hover:bg-solar-950/20 rounded-xl text-sm font-bold transition-all flex items-center justify-center group no-pdf disabled:opacity-50"
+                  className="w-full py-3 px-4 bg-white dark:bg-horizon-900 border-2 border-solar-500 text-solar-600 dark:text-solar-400 hover:bg-solar-50 dark:hover:bg-solar-900/20 rounded-xl text-sm font-bold transition-all flex items-center justify-center group no-pdf disabled:opacity-50"
                 >
                   {isGeneratingPdf ? (
                     <span className="flex items-center">

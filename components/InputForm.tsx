@@ -282,7 +282,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <label htmlFor="annualConsumption" className="block text-sm font-bold text-horizon-700 dark:text-gray-300">Consommation Annuelle</label>
-                  <span className="text-lg font-bold text-solar-600 dark:text-solar-400 bg-solar-50 dark:bg-solar-950/30 px-2 py-0.5 rounded-lg border border-solar-200 dark:border-solar-800/50">{formData.annualConsumption.toLocaleString()} kWh/an</span>
+                  <span className="text-lg font-bold text-solar-600 dark:text-solar-400 bg-solar-50 dark:bg-solar-900/30 px-2 py-0.5 rounded-lg border border-solar-200 dark:border-solar-800/50">{formData.annualConsumption.toLocaleString()} kWh/an</span>
                 </div>
                 <div className="relative pt-2">
                   <input
@@ -357,7 +357,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                        <div className="absolute -top-2.5 left-4 px-2 bg-white dark:bg-horizon-800 text-[10px] font-black text-horizon-400 dark:text-horizon-500 uppercase tracking-widest z-10">
                           Versant {index + 1}
                        </div>
-                       <div className={`flex items-center space-x-3 p-4 rounded-xl border-2 transition-all ${segment === 'S' || segment === 'SE' || segment === 'SW' ? 'bg-solar-50/30 dark:bg-solar-950/10 border-solar-500/20' : 'bg-white dark:bg-horizon-800 border-horizon-200 dark:border-horizon-700'}`}>
+                       <div className={`flex items-center space-x-3 p-4 rounded-xl border-2 transition-all ${segment === 'S' || segment === 'SE' || segment === 'SW' ? 'bg-solar-50/30 dark:bg-solar-900/10 border-solar-500/20' : 'bg-white dark:bg-horizon-800 border-horizon-200 dark:border-horizon-700'}`}>
                           <div className="w-10 h-10 rounded-full bg-horizon-100 dark:bg-horizon-900 flex items-center justify-center text-xl font-bold text-horizon-800 dark:text-white shadow-inner">
                              {ORIENTATION_OPTIONS.find(o => o.value === segment)?.icon}
                           </div>
@@ -415,7 +415,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div 
                   onClick={() => handleProfileChange('active')}
-                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'active' ? 'border-solar-500 bg-solar-50 dark:bg-solar-950/20' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/30 hover:border-horizon-300 dark:hover:border-horizon-600'}`}
+                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'active' ? 'border-solar-500 bg-solar-50 dark:bg-solar-900/20' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/30 hover:border-horizon-300 dark:hover:border-horizon-600'}`}
                 >
                   <div className="flex items-center space-x-3 mb-2">
                     <span className="text-2xl">🏢</span>
@@ -428,7 +428,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
 
                 <div 
                   onClick={() => handleProfileChange('home_office')}
-                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'home_office' ? 'border-solar-500 bg-solar-50 dark:bg-solar-950/20' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/30 hover:border-horizon-300 dark:hover:border-horizon-600'}`}
+                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'home_office' ? 'border-solar-500 bg-solar-50 dark:bg-solar-900/20' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/30 hover:border-horizon-300 dark:hover:border-horizon-600'}`}
                 >
                   <div className="flex items-center space-x-3 mb-2">
                     <span className="text-2xl">🏡</span>
