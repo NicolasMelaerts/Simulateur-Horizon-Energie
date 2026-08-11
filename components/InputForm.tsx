@@ -174,9 +174,9 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl border border-horizon-100 relative overflow-hidden">
+    <div className="bg-white dark:bg-horizon-800 rounded-2xl shadow-xl border border-horizon-100 dark:border-horizon-700 relative overflow-hidden transition-colors duration-300">
       {/* Progress Bar */}
-      <div className="absolute top-0 left-0 w-full h-1.5 bg-horizon-100">
+      <div className="absolute top-0 left-0 w-full h-1.5 bg-horizon-100 dark:bg-horizon-700">
         <div 
           className="h-full bg-solar-500 transition-all duration-500 ease-out"
           style={{ width: step === 1 ? '50%' : '100%' }}
@@ -195,15 +195,15 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
         
         {/* STEP 1: PROJET & LOCALISATION */}
         <div className={step === 1 ? 'block animate-fade-in' : 'hidden'}>
-          <div className="border-b border-horizon-100 pb-4 mb-6">
-            <h2 className="text-2xl font-bold text-horizon-900">1. Votre Projet</h2>
-            <p className="text-horizon-500 text-sm mt-1">Localisation et configuration toiture</p>
+          <div className="border-b border-horizon-100 dark:border-horizon-700 pb-4 mb-6">
+            <h2 className="text-2xl font-bold text-horizon-900 dark:text-white">1. Votre Projet</h2>
+            <p className="text-horizon-500 dark:text-horizon-400 text-sm mt-1">Localisation et configuration toiture</p>
           </div>
 
           <div className="space-y-6">
             {/* Address Input */}
             <div className="space-y-3">
-              <label htmlFor="address" className="block text-sm font-bold text-horizon-700 flex justify-between items-center">
+              <label htmlFor="address" className="block text-sm font-bold text-horizon-700 dark:text-gray-300 flex justify-between items-center">
                 <span>Adresse du bâtiment</span>
                 <button 
                   type="button" 
@@ -223,7 +223,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                   placeholder="Rue, Numéro, Ville"
                   value={formData.address}
                   onChange={handleChange}
-                  className="block w-full rounded-lg border-horizon-200 py-3 pl-4 bg-gray-50 border focus:border-solar-500 focus:ring-solar-500 text-horizon-900 sm:text-lg transition-shadow shadow-sm font-medium"
+                  className="block w-full rounded-lg border-horizon-200 dark:border-horizon-700 py-3 pl-4 bg-gray-50 dark:bg-horizon-900 border focus:border-solar-500 focus:ring-solar-500 text-horizon-900 dark:text-white sm:text-lg transition-all shadow-sm font-medium"
                 />
               </div>
               
@@ -235,7 +235,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     allowFullScreen title="Vue Aérienne"
                     className="absolute inset-0 w-full h-full object-cover"
                   ></iframe>
-                   <div className="absolute bottom-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded text-[10px] text-horizon-800 font-bold shadow pointer-events-none">
+                   <div className="absolute bottom-2 right-2 bg-white/90 dark:bg-horizon-800/90 backdrop-blur px-2 py-1 rounded text-[10px] text-horizon-800 dark:text-gray-200 font-bold shadow pointer-events-none">
                      Vue Satellite
                    </div>
                    
@@ -263,7 +263,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                 <div className="mt-2 flex items-center justify-between">
                     <div className="flex items-start space-x-2">
                       <svg className="w-4 h-4 text-horizon-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      <p className="text-xs text-horizon-600">Le bas de la carte indique le <strong>Sud</strong>.</p>
+                      <p className="text-xs text-horizon-600 dark:text-horizon-400">Le bas de la carte indique le <strong>Sud</strong>.</p>
                     </div>
                     {!isAnalyzing && (
                       <button 
@@ -281,8 +281,8 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="annualConsumption" className="block text-sm font-bold text-horizon-700">Consommation Annuelle</label>
-                  <span className="text-lg font-bold text-solar-600 bg-solar-50 px-2 py-0.5 rounded-lg border border-solar-200">{formData.annualConsumption.toLocaleString()} kWh/an</span>
+                  <label htmlFor="annualConsumption" className="block text-sm font-bold text-horizon-700 dark:text-gray-300">Consommation Annuelle</label>
+                  <span className="text-lg font-bold text-solar-600 dark:text-solar-400 bg-solar-50 dark:bg-solar-950/30 px-2 py-0.5 rounded-lg border border-solar-200 dark:border-solar-800/50">{formData.annualConsumption.toLocaleString()} kWh/an</span>
                 </div>
                 <div className="relative pt-2">
                   <input
@@ -294,9 +294,9 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     step="100"
                     value={formData.annualConsumption}
                     onChange={handleChange}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-solar-500"
+                    className="w-full h-2 bg-gray-200 dark:bg-horizon-700 rounded-lg appearance-none cursor-pointer accent-solar-500"
                   />
-                  <div className="flex justify-between text-[10px] font-bold text-horizon-400 mt-2 uppercase tracking-tighter">
+                  <div className="flex justify-between text-[10px] font-bold text-horizon-400 dark:text-horizon-500 mt-2 uppercase tracking-tighter">
                     <span>2.000 kWh</span>
                     <span>10.000 kWh</span>
                     <span>20.000 kWh</span>
@@ -305,7 +305,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="roofArea" className="block text-sm font-bold text-horizon-700">Surface de toiture estimée</label>
+                <label htmlFor="roofArea" className="block text-sm font-bold text-horizon-700 dark:text-gray-300">Surface de toiture estimée</label>
                 <div className="relative">
                   <input
                     type="number"
@@ -314,22 +314,22 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     min="10" step="5" required={step === 1}
                     value={formData.roofArea}
                     onChange={handleChange}
-                    className="block w-full rounded-lg border-horizon-200 pl-4 pr-12 py-3 bg-gray-50 border focus:border-solar-500 focus:ring-solar-500 sm:text-lg font-medium text-horizon-900"
+                    className="block w-full rounded-lg border-horizon-200 dark:border-horizon-700 pl-4 pr-12 py-3 bg-gray-50 dark:bg-horizon-900 border focus:border-solar-500 focus:ring-solar-500 sm:text-lg font-medium text-horizon-900 dark:text-white"
                   />
-                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-horizon-400 text-sm font-medium">m²</span>
+                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-horizon-400 dark:text-horizon-500 text-sm font-medium">m²</span>
                 </div>
               </div>
             </div>
 
             {/* Roof Configuration Multi-Segment */}
-            <div className="bg-white p-5 rounded-xl border border-horizon-200 shadow-sm space-y-6">
+            <div className="bg-white dark:bg-horizon-900/40 p-5 rounded-xl border border-horizon-200 dark:border-horizon-700/80 shadow-sm space-y-6">
                <div>
                  <div className="flex justify-between items-end mb-4">
                     <div>
-                      <label className="block text-sm font-bold text-horizon-700">
+                      <label className="block text-sm font-bold text-horizon-700 dark:text-gray-300">
                         Configuration de votre toiture
                       </label>
-                      <p className="text-xs text-horizon-500 mt-1">Nombre de versants exposés au soleil</p>
+                      <p className="text-xs text-horizon-500 dark:text-horizon-400 mt-1">Nombre de versants exposés au soleil</p>
                     </div>
                  </div>
                  
@@ -342,7 +342,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                         className={`py-3 rounded-xl text-sm font-bold border transition-all ${
                           numRoofSegments === num
                             ? 'bg-solar-500 text-white border-solar-500 shadow-md'
-                            : 'bg-gray-50 text-horizon-600 border-horizon-200 hover:border-horizon-300'
+                            : 'bg-gray-50 dark:bg-horizon-900 text-horizon-600 dark:text-gray-300 border-horizon-200 dark:border-horizon-700 hover:border-horizon-300 dark:hover:border-horizon-600'
                         }`}
                       >
                         {num} {num > 1 ? 'Versants' : 'Versant'}
@@ -354,11 +354,11 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                  {formData.roofSegments.map((segment, index) => (
                     <div key={index} className="relative group">
-                       <div className="absolute -top-2.5 left-4 px-2 bg-white text-[10px] font-black text-horizon-400 uppercase tracking-widest z-10">
+                       <div className="absolute -top-2.5 left-4 px-2 bg-white dark:bg-horizon-800 text-[10px] font-black text-horizon-400 dark:text-horizon-500 uppercase tracking-widest z-10">
                           Versant {index + 1}
                        </div>
-                       <div className={`flex items-center space-x-3 p-4 rounded-xl border-2 transition-all ${segment === 'S' || segment === 'SE' || segment === 'SW' ? 'bg-solar-50/30' : 'bg-white'}`}>
-                          <div className="w-10 h-10 rounded-full bg-horizon-100 flex items-center justify-center text-xl font-bold text-horizon-800 shadow-inner">
+                       <div className={`flex items-center space-x-3 p-4 rounded-xl border-2 transition-all ${segment === 'S' || segment === 'SE' || segment === 'SW' ? 'bg-solar-50/30 dark:bg-solar-950/10 border-solar-500/20' : 'bg-white dark:bg-horizon-800 border-horizon-200 dark:border-horizon-700'}`}>
+                          <div className="w-10 h-10 rounded-full bg-horizon-100 dark:bg-horizon-900 flex items-center justify-center text-xl font-bold text-horizon-800 dark:text-white shadow-inner">
                              {ORIENTATION_OPTIONS.find(o => o.value === segment)?.icon}
                           </div>
                           <div className="flex-1">
@@ -366,13 +366,13 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                                value={segment}
                                title="Orientation du versant"
                                onChange={(e) => handleSegmentChange(index, e.target.value as CardinalDirection)}
-                               className="block w-full border-none bg-transparent p-0 focus:ring-0 text-sm font-bold text-horizon-900 cursor-pointer"
+                               className="block w-full border-none bg-transparent dark:bg-horizon-800 p-0 focus:ring-0 text-sm font-bold text-horizon-900 dark:text-white cursor-pointer"
                              >
                                {ORIENTATION_OPTIONS.map((opt) => (
-                                 <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                 <option key={opt.value} value={opt.value} className="dark:bg-horizon-800 dark:text-white">{opt.label}</option>
                                ))}
                              </select>
-                             <div className="text-[10px] text-horizon-400 font-bold uppercase mt-0.5">
+                             <div className="text-[10px] text-horizon-400 dark:text-horizon-500 font-bold uppercase mt-0.5">
                                {segment === 'S' ? 'Exposition Optimale' : 'Exposition Standard'}
                              </div>
                           </div>
@@ -399,42 +399,42 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
 
         {/* STEP 2: PROFIL & ÉQUIPEMENTS */}
         <div className={step === 2 ? 'block animate-fade-in' : 'hidden'}>
-          <div className="border-b border-horizon-100 pb-4 mb-6">
-             <button type="button" onClick={handleBack} className="text-sm text-horizon-500 hover:text-horizon-700 mb-2 flex items-center font-medium">
+          <div className="border-b border-horizon-100 dark:border-horizon-700 pb-4 mb-6">
+             <button type="button" onClick={handleBack} className="text-sm text-horizon-500 dark:text-horizon-400 hover:text-horizon-700 dark:hover:text-white mb-2 flex items-center font-medium">
                <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                Retour
              </button>
-            <h2 className="text-2xl font-bold text-horizon-900">2. Profil de Consommation</h2>
-            <p className="text-horizon-500 text-sm mt-1">Affinez la simulation selon vos habitudes.</p>
+            <h2 className="text-2xl font-bold text-horizon-900 dark:text-white">2. Profil de Consommation</h2>
+            <p className="text-horizon-500 dark:text-horizon-400 text-sm mt-1">Affinez la simulation selon vos habitudes.</p>
           </div>
 
           <div className="space-y-8">
             {/* User Profile Selection */}
             <div>
-              <label className="block text-sm font-bold text-horizon-700 mb-3">Votre profil d'occupation</label>
+              <label className="block text-sm font-bold text-horizon-700 dark:text-gray-300 mb-3">Votre profil d'occupation</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div 
                   onClick={() => handleProfileChange('active')}
-                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'active' ? 'border-solar-500 bg-solar-50' : 'border-horizon-200 bg-white hover:border-horizon-300'}`}
+                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'active' ? 'border-solar-500 bg-solar-50 dark:bg-solar-950/20' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/30 hover:border-horizon-300 dark:hover:border-horizon-600'}`}
                 >
                   <div className="flex items-center space-x-3 mb-2">
                     <span className="text-2xl">🏢</span>
-                    <span className="font-bold text-horizon-900">Absent en journée la semaine</span>
+                    <span className="font-bold text-horizon-900 dark:text-white">Absent en journée la semaine</span>
                   </div>
-                  <p className="text-xs text-horizon-600 leading-relaxed">
+                  <p className="text-xs text-horizon-600 dark:text-gray-300 leading-relaxed">
                     Vous êtes absent en journée (8h-17h). La consommation se concentre le soir et le week-end.
                   </p>
                 </div>
 
                 <div 
                   onClick={() => handleProfileChange('home_office')}
-                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'home_office' ? 'border-solar-500 bg-solar-50' : 'border-horizon-200 bg-white hover:border-horizon-300'}`}
+                  className={`cursor-pointer rounded-xl p-4 border-2 transition-all ${formData.userProfile === 'home_office' ? 'border-solar-500 bg-solar-50 dark:bg-solar-950/20' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/30 hover:border-horizon-300 dark:hover:border-horizon-600'}`}
                 >
                   <div className="flex items-center space-x-3 mb-2">
                     <span className="text-2xl">🏡</span>
-                    <span className="font-bold text-horizon-900">Présent en journée la semaine</span>
+                    <span className="font-bold text-horizon-900 dark:text-white">Présent en journée la semaine</span>
                   </div>
-                  <p className="text-xs text-horizon-600 leading-relaxed">
+                  <p className="text-xs text-horizon-600 dark:text-gray-300 leading-relaxed">
                     Présence régulière en journée. Vous lancez vos machines quand il y a du soleil.
                   </p>
                 </div>
@@ -443,9 +443,9 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
 
             {/* Equipments Checkboxes */}
             <div>
-              <label className="block text-sm font-bold text-horizon-700 mb-3">Équipements spécifiques</label>
+              <label className="block text-sm font-bold text-horizon-700 dark:text-gray-300 mb-3">Équipements spécifiques</label>
               <div className="space-y-3">
-                <label className={`flex items-center p-4 rounded-xl border border-horizon-200 cursor-pointer transition-colors ${formData.hasHeatPump ? 'bg-horizon-50 border-horizon-400' : 'hover:bg-gray-50'}`}>
+                <label className={`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${formData.hasHeatPump ? 'bg-horizon-50 dark:bg-horizon-900/40 border-horizon-400 dark:border-solar-500/50' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/10 hover:bg-gray-50 dark:hover:bg-horizon-900/30'}`}>
                   <input
                     type="checkbox"
                     name="hasHeatPump"
@@ -454,14 +454,14 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     className="h-5 w-5 text-solar-600 focus:ring-solar-500 border-gray-300 rounded mr-3"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-horizon-900 flex items-center">
+                    <div className="font-semibold text-horizon-900 dark:text-white flex items-center">
                       <span className="mr-2">❄️</span> Pompe à Chaleur (Chauffage)
                     </div>
-                    <div className="text-xs text-horizon-500 mt-0.5">Consommation forte en hiver.</div>
+                    <div className="text-xs text-horizon-500 dark:text-horizon-400 mt-0.5">Consommation forte en hiver.</div>
                   </div>
                 </label>
                 
-                <label className={`flex items-center p-4 rounded-xl border border-horizon-200 cursor-pointer transition-colors ${formData.hasElectricWaterHeater ? 'bg-horizon-50 border-horizon-400' : 'hover:bg-gray-50'}`}>
+                <label className={`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${formData.hasElectricWaterHeater ? 'bg-horizon-50 dark:bg-horizon-900/40 border-horizon-400 dark:border-solar-500/50' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/10 hover:bg-gray-50 dark:hover:bg-horizon-900/30'}`}>
                   <input
                     type="checkbox"
                     name="hasElectricWaterHeater"
@@ -470,14 +470,14 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     className="h-5 w-5 text-solar-600 focus:ring-solar-500 border-gray-300 rounded mr-3"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-horizon-900 flex items-center">
+                    <div className="font-semibold text-horizon-900 dark:text-white flex items-center">
                       <span className="mr-2">💧</span> Boiler Électrique (Eau Chaude)
                     </div>
-                    <div className="text-xs text-horizon-500 mt-0.5">Consommation régulière toute l'année.</div>
+                    <div className="text-xs text-horizon-500 dark:text-horizon-400 mt-0.5">Consommation régulière toute l'année.</div>
                   </div>
                 </label>
 
-                <div className={`p-4 rounded-xl border border-horizon-200 transition-colors ${formData.hasElectricVehicle ? 'bg-horizon-50 border-horizon-400' : 'hover:bg-gray-50'}`}>
+                <div className={`p-4 rounded-xl border transition-all ${formData.hasElectricVehicle ? 'bg-horizon-50 dark:bg-horizon-900/40 border-horizon-400 dark:border-solar-500/50' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/10 hover:bg-gray-50 dark:hover:bg-horizon-900/30'}`}>
                    <label className="flex items-center cursor-pointer mb-2">
                     <input
                       type="checkbox"
@@ -487,17 +487,17 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                       className="h-5 w-5 text-solar-600 focus:ring-solar-500 border-gray-300 rounded mr-3"
                     />
                     <div className="flex-1">
-                      <div className="font-semibold text-horizon-900 flex items-center">
+                      <div className="font-semibold text-horizon-900 dark:text-white flex items-center">
                         <span className="mr-2">🚗</span> Véhicule Électrique (VE)
                       </div>
-                      <div className="text-xs text-horizon-500 mt-0.5">Charge importante à domicile.</div>
+                      <div className="text-xs text-horizon-500 dark:text-horizon-400 mt-0.5">Charge importante à domicile.</div>
                     </div>
                   </label>
                   
                   {formData.hasElectricVehicle && (
                     <div className="mt-3 pl-8 animate-fade-in space-y-4">
                        {/* Selector 1/2 Vehicles */}
-                       <div className="flex bg-gray-100 p-1 rounded-lg w-fit">
+                       <div className="flex bg-gray-100 dark:bg-horizon-900 p-1 rounded-lg w-fit">
                           {[1, 2].map(n => (
                             <button
                               key={n}
@@ -505,8 +505,8 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                               onClick={() => setFormData(prev => ({ ...prev, numElectricVehicles: n }))}
                               className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
                                 formData.numElectricVehicles === n 
-                                ? 'bg-white text-solar-600 shadow-sm' 
-                                : 'text-horizon-400 hover:text-horizon-600'
+                                ? 'bg-white dark:bg-horizon-800 text-solar-600 dark:text-solar-400 shadow-sm' 
+                                : 'text-horizon-400 dark:text-horizon-500 hover:text-horizon-600 dark:hover:text-horizon-300'
                               }`}
                             >
                               {n} {n > 1 ? 'Véhicules' : 'Véhicule'}
@@ -516,7 +516,7 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
 
                        <div className="space-y-3">
                           <div className="space-y-1">
-                             <label htmlFor="electricVehicleKm" className="block text-[10px] font-bold text-horizon-600 uppercase tracking-tight">
+                             <label htmlFor="electricVehicleKm" className="block text-[10px] font-bold text-horizon-600 dark:text-horizon-400 uppercase tracking-tight">
                                Km annuels {formData.numElectricVehicles === 2 ? '- Véhicule 1' : ''}
                              </label>
                              <div className="relative">
@@ -527,15 +527,15 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                                 min="0" step="100"
                                 value={formData.electricVehicleKm}
                                 onChange={handleChange}
-                                className="block w-full rounded-lg border-horizon-300 py-2 pl-3 pr-16 bg-white border focus:border-solar-500 focus:ring-solar-500 text-sm"
+                                className="block w-full rounded-lg border-horizon-300 dark:border-horizon-700 py-2 pl-3 pr-16 bg-white dark:bg-horizon-900 border focus:border-solar-500 focus:ring-solar-500 text-sm text-horizon-900 dark:text-white"
                               />
-                              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 text-xs font-bold">km/an</span>
+                              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 dark:text-horizon-500 text-xs font-bold">km/an</span>
                              </div>
                           </div>
 
                           {formData.numElectricVehicles === 2 && (
                             <div className="space-y-1 animate-fade-in">
-                               <label htmlFor="electricVehicle2Km" className="block text-[10px] font-bold text-horizon-600 uppercase tracking-tight">
+                               <label htmlFor="electricVehicle2Km" className="block text-[10px] font-bold text-horizon-600 dark:text-horizon-400 uppercase tracking-tight">
                                  Km annuels - Véhicule 2
                                </label>
                                <div className="relative">
@@ -546,22 +546,22 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                                   min="0" step="100"
                                   value={formData.electricVehicle2Km}
                                   onChange={handleChange}
-                                  className="block w-full rounded-lg border-horizon-300 py-2 pl-3 pr-16 bg-white border focus:border-solar-500 focus:ring-solar-500 text-sm"
+                                  className="block w-full rounded-lg border-horizon-300 dark:border-horizon-700 py-2 pl-3 pr-16 bg-white dark:bg-horizon-900 border focus:border-solar-500 focus:ring-solar-500 text-sm text-horizon-900 dark:text-white"
                                 />
-                                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 text-xs font-bold">km/an</span>
+                                <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-horizon-400 dark:text-horizon-500 text-xs font-bold">km/an</span>
                                </div>
                             </div>
                           )}
                        </div>
 
-                       <p className="text-[10px] text-solar-600 mt-1 font-medium">
+                       <p className="text-[10px] text-solar-600 dark:text-solar-400 mt-1 font-medium">
                          ~{Math.round((formData.electricVehicleKm + (formData.numElectricVehicles === 2 ? formData.electricVehicle2Km : 0)) * EV_EFFICIENCY).toLocaleString()} kWh/an estimés (sur base de {Math.round(EV_EFFICIENCY * 100)}kWh/100km)
                        </p>
                     </div>
                   )}
                 </div>
 
-                <label className={`flex items-center p-4 rounded-xl border border-horizon-200 cursor-pointer transition-colors ${formData.hasSwimmingPool ? 'bg-horizon-50 border-horizon-400' : 'hover:bg-gray-50'}`}>
+                <label className={`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${formData.hasSwimmingPool ? 'bg-horizon-50 dark:bg-horizon-900/40 border-horizon-400 dark:border-solar-500/50' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/10 hover:bg-gray-50 dark:hover:bg-horizon-900/30'}`}>
                   <input
                     type="checkbox"
                     name="hasSwimmingPool"
@@ -570,14 +570,14 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     className="h-5 w-5 text-solar-600 focus:ring-solar-500 border-gray-300 rounded mr-3"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-horizon-900 flex items-center">
+                    <div className="font-semibold text-horizon-900 dark:text-white flex items-center">
                       <span className="mr-2">🏊</span> Piscine / Wellness
                     </div>
-                    <div className="text-xs text-horizon-500 mt-0.5">Consommation estivale (filtration/PAC).</div>
+                    <div className="text-xs text-horizon-500 dark:text-horizon-400 mt-0.5">Consommation estivale (filtration/PAC).</div>
                   </div>
                 </label>
 
-                <label className={`flex items-center p-4 rounded-xl border border-horizon-200 cursor-pointer transition-colors ${formData.hasAirConditioning ? 'bg-horizon-50 border-horizon-400' : 'hover:bg-gray-50'}`}>
+                <label className={`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${formData.hasAirConditioning ? 'bg-horizon-50 dark:bg-horizon-900/40 border-horizon-400 dark:border-solar-500/50' : 'border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900/10 hover:bg-gray-50 dark:hover:bg-horizon-900/30'}`}>
                   <input
                     type="checkbox"
                     name="hasAirConditioning"
@@ -586,16 +586,16 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                     className="h-5 w-5 text-solar-600 focus:ring-solar-500 border-gray-300 rounded mr-3"
                   />
                   <div className="flex-1">
-                    <div className="font-semibold text-horizon-900 flex items-center">
+                    <div className="font-semibold text-horizon-900 dark:text-white flex items-center">
                       <span className="mr-2">🌬️</span> Climatisation
                     </div>
-                    <div className="text-xs text-horizon-500 mt-0.5">Consomme quand le soleil brille (Été).</div>
+                    <div className="text-xs text-horizon-500 dark:text-horizon-400 mt-0.5">Consomme quand le soleil brille (Été).</div>
                   </div>
                 </label>
               </div>
             </div>
 
-            <div className="pt-4 sticky bottom-0 bg-white pb-2 z-10 border-t border-horizon-100 mt-6">
+            <div className="pt-4 sticky bottom-0 bg-white dark:bg-horizon-800 pb-2 z-10 border-t border-horizon-100 dark:border-horizon-700 mt-6 transition-colors duration-300">
               <button
                 type="submit"
                 disabled={isSimulating}

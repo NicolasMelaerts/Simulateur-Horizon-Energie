@@ -51,6 +51,24 @@
       }
     </script>
     <style type="text/css">
+      :root {
+        --chart-grid: #e2e8f0;
+        --chart-tick: #64748b;
+        --chart-tick-right: #94a3b8;
+        --chart-bar: #0f172a;
+        --chart-tooltip-bg: #ffffff;
+        --chart-tooltip-text: #0f172a;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --chart-grid: #334155;
+          --chart-tick: #cbd5e1;
+          --chart-tick-right: #94a3b8;
+          --chart-bar: #cbd5e1;
+          --chart-tooltip-bg: #1e293b;
+          --chart-tooltip-text: #f8fafc;
+        }
+      }
       @keyframes thinking-text {
         0% { opacity: 0; transform: translateY(8px); }
         10%, 90% { opacity: 1; transform: translateY(0); }

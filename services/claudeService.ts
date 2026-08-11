@@ -1,5 +1,5 @@
 import { SimulationResult, UserInput } from '../types';
-import { GEMINI_EXPERT_PROMPT } from '../constants';
+import { CLAUDE_EXPERT_PROMPT } from '../constants';
 
 /**
  * Model used for the expert analysis.
@@ -55,7 +55,7 @@ export const generateExpertAnalysis = async (input: UserInput, result: Simulatio
     const equipString = equipments.length > 0 ? equipments.join(", ") : "Standard";
 
     // Use the prompt template from config.json
-    const prompt = GEMINI_EXPERT_PROMPT
+    const prompt = CLAUDE_EXPERT_PROMPT
       .replace(/\{\{annualConsumption\}\}/g, String(input.annualConsumption))
       .replace(/\{\{profileLabel\}\}/g, profileLabel)
       .replace(/\{\{equipString\}\}/g, equipString)

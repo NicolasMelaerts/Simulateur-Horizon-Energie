@@ -104,7 +104,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12 font-sans">
+    <div className="min-h-screen bg-gray-50 dark:bg-horizon-900 pb-12 font-sans transition-colors duration-300">
       {/* Header */}
       <header className="bg-white dark:bg-horizon-800 shadow-sm border-b border-gray-200 dark:border-horizon-700 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
@@ -125,10 +125,10 @@ const App: React.FC = () => {
           </div>
           <div className="hidden md:block text-right">
              <div className="inline-flex flex-col items-end">
-               <div className="text-sm font-extrabold text-horizon-900 bg-solar-50 px-4 py-1.5 rounded-full border border-solar-100 shadow-sm">
+               <div className="text-sm font-extrabold text-horizon-900 dark:text-solar-300 bg-solar-50 dark:bg-solar-950/20 px-4 py-1.5 rounded-full border border-solar-100 dark:border-solar-900/50 shadow-sm transition-colors">
                  Simulateur Horizon Énergie
                </div>
-               <div className="text-[10px] font-bold text-horizon-400 mt-1 uppercase tracking-widest mr-2">Wallonie & Bruxelles</div>
+               <div className="text-[10px] font-bold text-horizon-400 dark:text-horizon-500 mt-1 uppercase tracking-widest mr-2">Wallonie & Bruxelles</div>
              </div>
           </div>
         </div>
@@ -139,7 +139,7 @@ const App: React.FC = () => {
         {!result ? (
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-extrabold text-horizon-900 tracking-tight">
+              <h2 className="text-4xl font-extrabold text-horizon-900 dark:text-white tracking-tight">
                 Simulateur <span className="text-solar-600">Horizon Énergie</span>
               </h2>
             </div>

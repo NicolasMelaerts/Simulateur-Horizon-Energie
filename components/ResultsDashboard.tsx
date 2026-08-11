@@ -265,12 +265,12 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
         {/* Email unlock overlay - floats on top of blurred content */}
         {blurred && (
           <div className="absolute inset-0 z-20 flex items-start justify-center pt-16">
-            <div className="bg-white/95 backdrop-blur-sm border border-horizon-200 rounded-2xl shadow-2xl p-8 max-w-lg mx-4 text-center">
-              <div className="w-14 h-14 bg-solar-100 text-solar-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-white/95 dark:bg-horizon-800/95 backdrop-blur-sm border border-horizon-200 dark:border-horizon-700 rounded-2xl shadow-2xl p-8 max-w-lg mx-4 text-center transition-colors">
+              <div className="w-14 h-14 bg-solar-100 dark:bg-solar-950/40 text-solar-600 dark:text-solar-400 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
               </div>
-              <h3 className="text-xl font-bold text-horizon-900 mb-2">Découvrez vos résultats détaillés</h3>
-              <p className="text-sm text-horizon-500 mb-5">Remplissez vos coordonnées pour accéder à l'analyse complète de votre simulation photovoltaïque.</p>
+              <h3 className="text-xl font-bold text-horizon-900 dark:text-white mb-2">Découvrez vos résultats détaillés</h3>
+              <p className="text-sm text-horizon-500 dark:text-horizon-400 mb-5">Remplissez vos coordonnées pour accéder à l'analyse complète de votre simulation photovoltaïque.</p>
               <form onSubmit={handleUnlockSubmit} className="flex flex-col gap-3">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
@@ -279,7 +279,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                     value={unlockFirstName}
                     onChange={(e) => setUnlockFirstName(e.target.value)}
                     placeholder="Prénom"
-                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none w-full"
+                    className="px-4 py-3 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-xl focus:ring-2 focus:ring-solar-500 outline-none w-full"
                   />
                   <input
                     type="text"
@@ -287,7 +287,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                     value={unlockLastName}
                     onChange={(e) => setUnlockLastName(e.target.value)}
                     placeholder="Nom"
-                    className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none w-full"
+                    className="px-4 py-3 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-xl focus:ring-2 focus:ring-solar-500 outline-none w-full"
                   />
                 </div>
                 <input
@@ -296,7 +296,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   value={unlockEmail}
                   onChange={(e) => setUnlockEmail(e.target.value)}
                   placeholder="votre@email.com"
-                  className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                  className="px-4 py-3 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
                 />
                 <input
                   type="tel"
@@ -304,7 +304,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   value={unlockPhone}
                   onChange={(e) => setUnlockPhone(e.target.value)}
                   placeholder="04xx / xx xx xx"
-                  className="px-4 py-3 text-sm border border-horizon-200 rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
+                  className="px-4 py-3 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-xl focus:ring-2 focus:ring-solar-500 outline-none"
                 />
                 <button type="submit" disabled={isUnlocking} className="px-6 py-3 bg-solar-500 hover:bg-solar-600 text-white font-bold rounded-xl text-sm shadow-lg shadow-solar-100 transition-colors whitespace-nowrap disabled:opacity-50 flex items-center justify-center">
                   {isUnlocking ? (
@@ -318,7 +318,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   ) : 'Voir les résultats'}
                 </button>
               </form>
-              <p className="text-[10px] text-horizon-400 mt-3">Vos données restent confidentielles et ne seront pas partagées.</p>
+              <p className="text-[10px] text-horizon-400 dark:text-horizon-500 mt-3">Vos données restent confidentielles et ne seront pas partagées.</p>
             </div>
           </div>
         )}
@@ -327,15 +327,15 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
           {/* Financial & Performance Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Detailed Numbers Card */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-horizon-100">
+            <div className="bg-white dark:bg-horizon-800 p-6 rounded-2xl shadow-sm border border-horizon-100 dark:border-horizon-700 transition-colors duration-300">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Investment */}
                 <div>
-                  <h4 className="text-xs font-bold text-horizon-500 uppercase tracking-wide mb-4 border-b border-gray-100 pb-2">Investissement (HTVA)*</h4>
+                  <h4 className="text-xs font-bold text-horizon-500 dark:text-horizon-400 uppercase tracking-wide mb-4 border-b border-gray-100 dark:border-horizon-750 pb-2">Investissement (HTVA)*</h4>
                   <div className="mb-3">
-                    <span className="text-2xl font-bold text-horizon-900">{result.totalInvestment.toLocaleString()} €</span>
+                    <span className="text-2xl font-bold text-horizon-900 dark:text-white">{result.totalInvestment.toLocaleString()} €</span>
                   </div>
-                  <div className="space-y-1 text-xs text-horizon-600">
+                  <div className="space-y-1 text-xs text-horizon-600 dark:text-gray-300">
                     <div className="flex justify-between">
                       <span>Photovoltaïque</span>
                       <span className="font-semibold">{result.capexPanels.toLocaleString()} €</span>
@@ -349,27 +349,27 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
                 {/* Production & Performance */}
                 <div>
-                  <h4 className="text-xs font-bold text-horizon-500 uppercase tracking-wide mb-4 border-b border-gray-100 pb-2">Bilan de Performance</h4>
+                  <h4 className="text-xs font-bold text-horizon-500 dark:text-horizon-400 uppercase tracking-wide mb-4 border-b border-gray-100 dark:border-horizon-750 pb-2">Bilan de Performance</h4>
                   <div className="mb-3">
-                    <p className="text-xs text-horizon-400 mb-1">Production annuelle est.</p>
-                    <span className="text-2xl font-bold text-horizon-900">{result.estimatedAnnualProduction.toLocaleString()} <span className="text-sm font-medium">kWh</span></span>
+                    <p className="text-xs text-horizon-400 dark:text-horizon-500 mb-1">Production annuelle est.</p>
+                    <span className="text-2xl font-bold text-horizon-900 dark:text-white">{result.estimatedAnnualProduction.toLocaleString()} <span className="text-sm font-medium">kWh</span></span>
                   </div>
 
                   {/* Autoconsommation Visual */}
                   <div className="space-y-2">
                     <div className="flex justify-between items-end">
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-bold uppercase text-horizon-500">Autonomie estimée</span>
-                        <span className="text-xl font-extrabold text-solar-600">{result.autonomyPercentage}%</span>
+                        <span className="text-[10px] font-bold uppercase text-horizon-500 dark:text-horizon-400">Autonomie estimée</span>
+                        <span className="text-xl font-extrabold text-solar-600 dark:text-solar-400">{result.autonomyPercentage}%</span>
                       </div>
                     </div>
 
-                    <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden flex relative">
+                    <div className="w-full bg-gray-100 dark:bg-horizon-900 rounded-full h-2.5 overflow-hidden flex relative">
                       <div className="bg-solar-500 h-full" style={{ width: `${(result.naturalSelfConsumptionRate / totalRate) * 100}%` }}></div>
                       <div className="bg-blue-500 h-full" style={{ width: `${(result.batterySelfConsumptionBoost / totalRate) * 100}%` }}></div>
                     </div>
 
-                    <div className="flex justify-between text-[9px] font-medium text-horizon-400 mt-1">
+                    <div className="flex justify-between text-[9px] font-medium text-horizon-400 dark:text-horizon-500 mt-1">
                       <span className="flex items-center">
                         <div className="w-2 h-2 rounded-full bg-solar-500 mr-1"></div>
                         PV: {pvAutonomyPart}%
@@ -382,34 +382,34 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   </div>
 
                   <div className="mt-4">
-                    <div className="p-3 bg-solar-50 rounded-xl border border-solar-200 flex flex-col justify-center items-center text-center">
-                      <p className="text-[10px] font-bold text-solar-700 uppercase tracking-wide mb-1">Électricité Économisée</p>
-                      <p className="text-2xl font-extrabold text-solar-600 leading-none">{result.selfConsumedEnergy.toLocaleString()} <span className="text-sm font-bold">kWh</span></p>
+                    <div className="p-3 bg-solar-50 dark:bg-solar-950/20 rounded-xl border border-solar-200 dark:border-solar-800/40 flex flex-col justify-center items-center text-center">
+                      <p className="text-[10px] font-bold text-solar-700 dark:text-solar-300 uppercase tracking-wide mb-1">Électricité Économisée</p>
+                      <p className="text-2xl font-extrabold text-solar-600 dark:text-solar-400 leading-none">{result.selfConsumedEnergy.toLocaleString()} <span className="text-sm font-bold">kWh</span></p>
                     </div>
                   </div>
                 </div>
 
                 {/* Annual Gain Split */}
                 <div>
-                  <h4 className="text-xs font-bold text-horizon-500 uppercase tracking-wide mb-4 border-b border-gray-100 pb-2">Gains Annuels</h4>
+                  <h4 className="text-xs font-bold text-horizon-500 dark:text-horizon-400 uppercase tracking-wide mb-4 border-b border-gray-100 dark:border-horizon-750 pb-2">Gains Annuels</h4>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-bold text-green-700 uppercase">Économie</p>
-                        <p className="text-sm font-bold text-horizon-600">{result.selfConsumedEnergy.toLocaleString()} kWh</p>
+                        <p className="text-xs font-bold text-green-700 dark:text-green-500 uppercase">Économie</p>
+                        <p className="text-sm font-bold text-horizon-600 dark:text-gray-300">{result.selfConsumedEnergy.toLocaleString()} kWh</p>
                       </div>
-                      <span className="text-lg font-bold text-green-700">+{result.annualSavings.toLocaleString()} €</span>
+                      <span className="text-lg font-bold text-green-700 dark:text-green-500">+{result.annualSavings.toLocaleString()} €</span>
                     </div>
                     <div className="flex items-center justify-between opacity-90">
                       <div>
-                        <p className="text-xs font-bold text-orange-600 uppercase">Injection</p>
-                        <p className="text-sm font-bold text-horizon-500">{result.injectedEnergy.toLocaleString()} kWh</p>
+                        <p className="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase">Injection</p>
+                        <p className="text-sm font-bold text-horizon-500 dark:text-gray-400">{result.injectedEnergy.toLocaleString()} kWh</p>
                       </div>
-                      <span className="text-lg font-bold text-orange-600">+{result.annualSales.toLocaleString()} €</span>
+                      <span className="text-lg font-bold text-orange-600 dark:text-orange-400">+{result.annualSales.toLocaleString()} €</span>
                     </div>
-                    <div className="pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
-                      <span className="text-xs font-bold text-horizon-900">Total</span>
-                      <span className="text-xl font-bold text-horizon-900">+{result.totalAnnualGain.toLocaleString()} €</span>
+                    <div className="pt-2 border-t border-dashed border-gray-200 dark:border-horizon-700 flex justify-between items-center">
+                      <span className="text-xs font-bold text-horizon-900 dark:text-white">Total</span>
+                      <span className="text-xl font-bold text-horizon-900 dark:text-white">+{result.totalAnnualGain.toLocaleString()} €</span>
                     </div>
                   </div>
                 </div>
@@ -421,30 +421,30 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
           {/* AI Analysis & CTA */}
           <div className="lg:col-span-1">
-            <div className="bg-white border border-horizon-200 p-6 rounded-2xl shadow-lg h-full flex flex-col relative overflow-hidden">
+            <div className="bg-white dark:bg-horizon-800 border border-horizon-200 dark:border-horizon-700 p-6 rounded-2xl shadow-lg h-full flex flex-col relative overflow-hidden transition-colors duration-300">
               <div className="absolute top-0 right-0 p-4 opacity-5">
-                <svg className="w-40 h-40 text-horizon-900" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" /></svg>
+                <svg className="w-40 h-40 text-horizon-900 dark:text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" /></svg>
               </div>
 
               <div className="flex items-center space-x-3 mb-5 relative z-10">
-                <div className="p-2.5 bg-horizon-800 rounded-xl shadow-md">
+                <div className="p-2.5 bg-horizon-800 dark:bg-horizon-900 rounded-xl shadow-md">
                   <svg className="w-5 h-5 text-solar-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-horizon-900">Expert Horizon</h3>
-                  <p className="text-xs text-horizon-500 font-medium uppercase tracking-wide">Analyse du dimensionnement</p>
+                  <h3 className="text-lg font-bold text-horizon-900 dark:text-white">Expert Horizon</h3>
+                  <p className="text-xs text-horizon-500 dark:text-horizon-400 font-medium uppercase tracking-wide">Analyse du dimensionnement</p>
                 </div>
               </div>
 
-              <div className="flex-grow prose prose-sm prose-slate overflow-y-auto max-h-[400px] bg-gray-50 p-5 rounded-xl border border-horizon-100 relative z-10 text-sm leading-relaxed font-medium text-horizon-700">
+              <div className="flex-grow prose prose-sm prose-slate overflow-y-auto max-h-[400px] bg-gray-50 dark:bg-horizon-900 p-5 rounded-xl border border-horizon-100 dark:border-horizon-700 relative z-10 text-sm leading-relaxed font-medium text-horizon-700 dark:text-gray-300">
                 {loadingAi ? (
                   <div className="flex flex-col items-center justify-center h-64 space-y-6">
                     {/* AI Agent Avatar Animation */}
                     <div className="relative">
                       <div className="absolute inset-0 bg-solar-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
-                      <div className="relative w-20 h-20 bg-horizon-900 rounded-full flex items-center justify-center border-2 border-solar-500/30 shadow-2xl">
+                      <div className="relative w-20 h-20 bg-horizon-900 dark:bg-horizon-800 rounded-full flex items-center justify-center border-2 border-solar-500/30 shadow-2xl">
                         <svg className="w-10 h-10 text-solar-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
@@ -462,11 +462,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
                       {/* Dynamic Thinking Messages */}
                       <div className="h-10 overflow-hidden flex items-center justify-center">
-                        <p key={thinkingStep} className="text-[11px] md:text-xs font-bold text-horizon-800 uppercase tracking-wider animate-thinking-text text-center px-2">
+                        <p key={thinkingStep} className="text-[11px] md:text-xs font-bold text-horizon-850 dark:text-solar-400 uppercase tracking-wider animate-thinking-text text-center px-2">
                           {thinkingMessages[thinkingStep]}
                         </p>
                       </div>
-                      <p className="text-[10px] text-horizon-500 uppercase font-bold tracking-tighter">Expertise Solaire en cours</p>
+                      <p className="text-[10px] text-horizon-500 dark:text-horizon-400 uppercase font-bold tracking-tighter">Expertise Solaire en cours</p>
                     </div>
                   </div>
                 ) : aiAnalysis ? (
@@ -474,45 +474,45 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                     <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
                   </div>
                 ) : (
-                  <p className="text-horizon-400 italic text-center mt-10">L'analyse détaillée apparaîtra ici une fois la simulation lancée.</p>
+                  <p className="text-horizon-400 dark:text-horizon-500 italic text-center mt-10">L'analyse détaillée apparaîtra ici une fois la simulation lancée.</p>
                 )}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-horizon-100 relative z-10 space-y-3">
+              <div className="mt-6 pt-4 border-t border-horizon-100 dark:border-horizon-700 relative z-10 space-y-3">
                 {blurEnabled ? (
                   <>
                     {/* En mode blur, le devis a déjà été envoyé via le formulaire de déblocage */}
                   </>
                 ) : showLeadForm ? (
-                  <div className="animate-fade-in bg-white p-4 rounded-xl border border-horizon-200 shadow-sm">
+                  <div className="animate-fade-in bg-white dark:bg-horizon-800 p-4 rounded-xl border border-horizon-200 dark:border-horizon-700 shadow-sm transition-colors duration-300">
                     {formSubmitted ? (
                       <div className="text-center py-4">
-                        <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <div className="w-12 h-12 bg-green-100 dark:bg-green-950/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-3">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                         </div>
-                        <h4 className="font-bold text-horizon-900">Demande envoyée !</h4>
-                        <p className="text-xs text-horizon-500 mt-1">Un conseiller de Horizon Energie vous recontactera.</p>
-                        <button type="button" onClick={() => { setShowLeadForm(false); setFormSubmitted(false); }} className="mt-4 text-xs font-bold text-solar-600 uppercase">Retour</button>
+                        <h4 className="font-bold text-horizon-900 dark:text-white">Demande envoyée !</h4>
+                        <p className="text-xs text-horizon-500 dark:text-horizon-400 mt-1">Un conseiller de Horizon Energie vous recontactera.</p>
+                        <button type="button" onClick={() => { setShowLeadForm(false); setFormSubmitted(false); }} className="mt-4 text-xs font-bold text-solar-600 dark:text-solar-400 uppercase">Retour</button>
                       </div>
                     ) : (
                       <form onSubmit={handleSendQuoteRequest} className="space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           <div>
-                            <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Prénom</label>
-                            <input required name="firstName" value={formData.firstName} onChange={handleInputChange} type="text" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="Jean" />
+                            <label className="block text-[10px] font-bold text-horizon-500 dark:text-horizon-400 uppercase mb-1">Prénom</label>
+                            <input required name="firstName" value={formData.firstName} onChange={handleInputChange} type="text" className="w-full px-3 py-2 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="Jean" />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Nom</label>
-                            <input required name="lastName" value={formData.lastName} onChange={handleInputChange} type="text" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="Dupont" />
+                            <label className="block text-[10px] font-bold text-horizon-500 dark:text-horizon-400 uppercase mb-1">Nom</label>
+                            <input required name="lastName" value={formData.lastName} onChange={handleInputChange} type="text" className="w-full px-3 py-2 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="Dupont" />
                           </div>
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Téléphone</label>
-                          <input required name="phone" value={formData.phone} onChange={handleInputChange} type="tel" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="04xx / xx xx xx" />
+                          <label className="block text-[10px] font-bold text-horizon-500 dark:text-horizon-400 uppercase mb-1">Téléphone</label>
+                          <input required name="phone" value={formData.phone} onChange={handleInputChange} type="tel" className="w-full px-3 py-2 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="04xx / xx xx xx" />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold text-horizon-500 uppercase mb-1">Email</label>
-                          <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full px-3 py-2 text-sm border border-horizon-200 rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="client@exemple.com" />
+                          <label className="block text-[10px] font-bold text-horizon-500 dark:text-horizon-400 uppercase mb-1">Email</label>
+                          <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full px-3 py-2 text-sm border border-horizon-200 dark:border-horizon-700 bg-white dark:bg-horizon-900 text-horizon-900 dark:text-white rounded-lg focus:ring-1 focus:ring-solar-500 outline-none" placeholder="client@exemple.com" />
                         </div>
                         <button
                           type="submit"
@@ -537,7 +537,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                     <button
                       type="button"
                       onClick={() => setShowLeadForm(true)}
-                      className="w-full py-4 px-4 bg-solar-500 hover:bg-solar-600 text-white rounded-xl text-lg font-bold shadow-xl shadow-solar-100 transition-all transform hover:scale-[1.02] flex items-center justify-center group no-pdf"
+                      className="w-full py-4 px-4 bg-solar-500 hover:bg-solar-600 text-white rounded-xl text-lg font-bold shadow-xl shadow-solar-100 hover:shadow-solar-500/10 transition-all transform hover:scale-[1.02] flex items-center justify-center group no-pdf"
                     >
                       Demandez un devis sur mesure
                       <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
@@ -549,7 +549,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                   type="button"
                   onClick={handleDownloadPdf}
                   disabled={isGeneratingPdf}
-                  className="w-full py-3 px-4 bg-white border-2 border-solar-500 text-solar-600 hover:bg-solar-50 rounded-xl text-sm font-bold transition-all flex items-center justify-center group no-pdf disabled:opacity-50"
+                  className="w-full py-3 px-4 bg-white dark:bg-horizon-900 border-2 border-solar-500 text-solar-600 dark:text-solar-400 hover:bg-solar-50 dark:hover:bg-solar-950/20 rounded-xl text-sm font-bold transition-all flex items-center justify-center group no-pdf disabled:opacity-50"
                 >
                   {isGeneratingPdf ? (
                     <span className="flex items-center">
@@ -570,7 +570,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
                 <button
                   type="button"
                   onClick={onReset}
-                  className="w-full py-2 text-horizon-400 hover:text-horizon-600 text-xs font-bold uppercase tracking-widest transition-colors no-pdf"
+                  className="w-full py-2 text-horizon-400 dark:text-horizon-500 hover:text-horizon-600 dark:hover:text-horizon-300 text-xs font-bold uppercase tracking-widest transition-colors no-pdf"
                 >
                   Faire un nouvel essai
                 </button>
@@ -582,7 +582,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ result, user
 
       {/* Disclaimer Footnote */}
       <div className="text-center mt-4 pb-2 px-4 opacity-70">
-        <p className="mt-4 text-xs text-horizon-500 italic text-center">
+        <p className="mt-4 text-xs text-horizon-500 dark:text-horizon-400 italic text-center">
           * Cette simulation est fournie à titre indicatif sur la base d'estimations moyennes.
           Les résultats peuvent varier selon la configuration réelle de votre toiture et vos habitudes de consommation.
           Une étude technique sur place et un devis personnalisé sont nécessaires pour obtenir des données définitives.

@@ -29,7 +29,7 @@ export const BLUR_RESULTS_ENABLED = config.blur_results.ENABLED;
 export const ENABLE_EMAIL_SENDING = config.integrations.ENABLE_EMAIL_SENDING;
 export const ENABLE_CRM_PUSH = config.integrations.ENABLE_CRM_PUSH;
 export const META_PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID || config.integrations.META_PIXEL_ID || '';
-export const GEMINI_EXPERT_PROMPT = config.gemini_expert_prompt;
+export const CLAUDE_EXPERT_PROMPT = config.claude_expert_prompt;
 
 
 /**

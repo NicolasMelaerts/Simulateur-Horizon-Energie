@@ -9,8 +9,8 @@ interface SimulationChartsProps {
 
 export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybackYear }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg border border-horizon-100">
-      <h3 className="text-xl font-bold text-horizon-900 mb-6 flex items-center">
+    <div className="bg-white dark:bg-horizon-800 p-6 rounded-2xl shadow-lg border border-horizon-100 dark:border-horizon-700 transition-colors duration-300">
+      <h3 className="text-xl font-bold text-horizon-900 dark:text-white mb-6 flex items-center">
         <svg className="w-6 h-6 mr-2 text-solar-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
         Flux Financier & ROI
       </h3>
@@ -25,14 +25,14 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
               bottom: 0,
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-            <XAxis dataKey="year" tick={{fontSize: 11, fill: '#64748b'}} tickLine={false} axisLine={false} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+            <XAxis dataKey="year" tick={{fontSize: 11, fill: 'var(--chart-tick)'}} tickLine={false} axisLine={false} />
             
             {/* Left Y-axis for Cumulative Cashflow */}
             <YAxis 
               yAxisId="left"
               tickFormatter={(v) => `${v/1000}k`} 
-              tick={{fontSize: 11, fill: '#64748b'}} 
+              tick={{fontSize: 11, fill: 'var(--chart-tick)'}} 
               tickLine={false} 
               axisLine={false}
               width={40}
@@ -43,7 +43,7 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
               yAxisId="right"
               orientation="right"
               tickFormatter={(v) => `${v}€`}
-              tick={{fontSize: 10, fill: '#94a3b8'}}
+              tick={{fontSize: 10, fill: 'var(--chart-tick-right)'}}
               tickLine={false}
               axisLine={false}
               width={50}
@@ -55,10 +55,10 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
                 const label = isCumulative ? 'Cashflow Cumulé' : 'Gain de l\'année';
                 return [`${value.toLocaleString('fr-BE')} €`, label];
               }}
-              contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontFamily: 'inherit' }}
+              contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'var(--chart-tooltip-bg)', color: 'var(--chart-tooltip-text)', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.3)', fontFamily: 'inherit' }}
             />
             
-            <ReferenceLine yAxisId="left" y={0} stroke="#cbd5e1" strokeWidth={1} />
+            <ReferenceLine yAxisId="left" y={0} stroke="var(--chart-grid)" strokeWidth={1} />
             
             <ReferenceLine 
               yAxisId="left"
@@ -73,7 +73,7 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
             <Bar 
               yAxisId="right"
               dataKey="annualGain" 
-              fill="#0f172a" 
+              fill="var(--chart-bar)" 
               barSize={12} 
               radius={[4, 4, 0, 0]} 
               opacity={0.15} 
@@ -92,7 +92,7 @@ export const SimulationCharts: React.FC<SimulationChartsProps> = ({ data, paybac
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-      <p className="text-sm text-horizon-500 mt-4 text-center font-medium">
+      <p className="text-sm text-horizon-500 dark:text-horizon-400 mt-4 text-center font-medium">
         La ligne <span className="text-solar-600 font-bold">verte</span> représente votre bénéfice net cumulé.
       </p>
     </div>
