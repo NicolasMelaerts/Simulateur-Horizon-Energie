@@ -24,7 +24,7 @@ jobs:
 
       - name: Inject Claude API Key into PHP proxy
         run: |
-          node -e "const fs = require('fs'); const file = 'public/api/claude.php'; fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace('CLAUDE_API_KEY_PLACEHOLDER', process.env.CLAUDE_API_KEY));"
+          node -e "const fs = require('fs'); const key = process.env.CLAUDE_API_KEY; if (!key) { console.error('CLAUDE_API_KEY secret is empty - the AI analysis would be broken in production.'); process.exit(1); } const file = 'public/api/claude.php'; const src = fs.readFileSync(file, 'utf8'); if (!src.includes('CLAUDE_API_KEY_PLACEHOLDER')) { console.error('Placeholder not found in ' + file); process.exit(1); } fs.writeFileSync(file, src.replace('CLAUDE_API_KEY_PLACEHOLDER', key));"
         env:
           CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
 

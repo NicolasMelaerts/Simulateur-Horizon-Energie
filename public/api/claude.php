@@ -1,7 +1,15 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Never render PHP errors into the response: this file holds the API key and
+// error output can leak it (or server paths) to the browser. Log instead.
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1);
 error_reporting(E_ALL);
+
+// Buffer all output. Some shared hosts force display_errors=On, and any notice
+// printed before our JSON makes the response unparseable for the browser
+// (response.json() throws). We discard the buffer right before emitting JSON.
+ob_start();
 
 header("Content-Type: application/json");
 
@@ -14,14 +22,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+/**
+ * Emit a JSON response, discarding anything already buffered (stray PHP notices,
+ * BOMs, host-injected output) so the body is always valid JSON.
+ */
+function send_json(array $payload, int $status = 200): void
+{
+    if (ob_get_level() > 0) {
+        ob_clean();
+    }
+    http_response_code($status);
+    echo json_encode($payload);
+    exit;
+}
+
 // Read raw POST data
 $inputData = json_decode(file_get_contents('php://input'), true);
 $prompt = isset($inputData['prompt']) ? $inputData['prompt'] : '';
 
 if (empty($prompt)) {
-    http_response_code(400);
-    echo json_encode(["error" => "Prompt is required."]);
-    exit;
+    send_json(["error" => "Prompt is required."], 400);
 }
 
 // This placeholder will be replaced by GitHub Actions during deployment
@@ -33,14 +53,13 @@ if ($apiKey === "CLAUDE_API_KEY_PLACEHOLDER") {
 }
 
 if (empty($apiKey)) {
-    http_response_code(500);
-    echo json_encode(["error" => "API Key not configured."]);
-    exit;
+    send_json(["error" => "API Key not configured."], 500);
 }
 
+// Keep this model id in sync with CLAUDE_MODEL in services/claudeService.ts.
 $payload = [
-    "model" => "claude-3-5-haiku-20241022",
-    "max_tokens" => 500,
+    "model" => "claude-haiku-4-5",
+    "max_tokens" => 1024,
     "messages" => [
         [
             "role" => "user",
@@ -68,27 +87,26 @@ $response = @file_get_contents("https://api.anthropic.com/v1/messages", false, $
 
 if ($response === false) {
     $error = error_get_last();
-    http_response_code(500);
-    echo json_encode(["error" => "HTTP request failed: " . ($error['message'] ?? 'Unknown error')]);
-    exit;
-}
-
-// Extract HTTP status code from response headers
-$status_code = 500;
-if (isset($http_response_header) && count($http_response_header) > 0) {
-    preg_match('{HTTP\/\S*\s(\d\d\d)}', $http_response_header[0], $match);
-    if (isset($match[1])) {
-        $status_code = (int)$match[1];
-    }
-}
-
-if ($status_code !== 200) {
-    http_response_code($status_code);
-    echo $response;
-    exit;
+    send_json(["error" => "HTTP request failed: " . ($error['message'] ?? 'Unknown error')], 502);
 }
 
 $responseData = json_decode($response, true);
+
+if (!is_array($responseData)) {
+    send_json(["error" => "Unreadable response from Claude API."], 502);
+}
+
+// Detect failure from the payload rather than the response headers: Anthropic always
+// returns {"type":"error","error":{...}} on a non-2xx, and the legacy
+// $http_response_header variable is deprecated on PHP 8.4+ — reading it emits notices
+// that would corrupt this JSON response on hosts with display_errors enabled.
+if (isset($responseData['error'])) {
+    send_json([
+        "error" => $responseData['error']['message'] ?? 'Claude API error',
+        "type"  => $responseData['error']['type'] ?? 'api_error',
+    ], 502);
+}
+
 $content = isset($responseData['content'][0]['text']) ? $responseData['content'][0]['text'] : '';
 
-echo json_encode(["analysis" => $content]);
+send_json(["analysis" => $content]);

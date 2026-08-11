@@ -2,6 +2,12 @@ import { SimulationResult, UserInput } from '../types';
 import { GEMINI_EXPERT_PROMPT } from '../constants';
 
 /**
+ * Model used for the expert analysis.
+ * Must stay in sync with the model in public/api/claude.php.
+ */
+const CLAUDE_MODEL = 'claude-haiku-4-5';
+
+/**
  * Geocode an address using the free, public OpenStreetMap Nominatim API.
  * This is free, fast, and does not require any API Key or CORS proxy.
  */
@@ -62,22 +68,32 @@ export const generateExpertAnalysis = async (input: UserInput, result: Simulatio
       .replace(/\{\{paybackPeriod\}\}/g, String(result.paybackPeriod));
 
     let response;
-    // @ts-ignore
-    const localApiKey = import.meta.env.VITE_CLAUDE_API_KEY;
 
     // In local development, if a local key is provided, we can call Anthropic directly
-    if (window.location.hostname === 'localhost' && localApiKey) {
+    // (the PHP proxy only exists once deployed). Covers localhost and 127.0.0.1.
+    const isLocalDev = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+
+    // SECURITY — do not refactor this condition.
+    // Any VITE_-prefixed variable present at build time is inlined verbatim into the
+    // public JS bundle. `import.meta.env.DEV` must be read INLINE here (and first) so
+    // Vite replaces it with `false` and the minifier folds the whole branch away,
+    // dropping the key literal with it. Assigning it to a variable first defeats
+    // constant folding and leaves the key in the shipped bundle in plaintext.
+    // @ts-ignore
+    if (import.meta.env.DEV && isLocalDev && import.meta.env.VITE_CLAUDE_API_KEY) {
       response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': localApiKey,
+          // @ts-ignore
+          'x-api-key': import.meta.env.VITE_CLAUDE_API_KEY,
           'anthropic-version': '2023-06-01',
-          'dangerously-allow-developer-user-agent': 'true'
+          // Required for direct browser-to-Anthropic calls (dev only): opts in to CORS.
+          'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-3-5-haiku-20241022',
-          max_tokens: 500,
+          model: CLAUDE_MODEL,
+          max_tokens: 1024,
           messages: [{ role: 'user', content: prompt }]
         })
       });
@@ -93,7 +109,10 @@ export const generateExpertAnalysis = async (input: UserInput, result: Simulatio
     }
 
     if (!response.ok) {
-      throw new Error(`Claude API error: HTTP ${response.status}`);
+      // Surface the API's own error body — a bare status code hides the real cause
+      // (retired model id, invalid key, rate limit).
+      const details = await response.text().catch(() => '');
+      throw new Error(`Claude API error: HTTP ${response.status} ${details}`);
     }
 
     const data = await response.json();
