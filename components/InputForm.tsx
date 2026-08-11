@@ -366,10 +366,10 @@ export const InputForm: React.FC<InputFormProps> = ({ onSimulate, isSimulating }
                                value={segment}
                                title="Orientation du versant"
                                onChange={(e) => handleSegmentChange(index, e.target.value as CardinalDirection)}
-                               className="block w-full border-none bg-transparent dark:bg-horizon-800 p-0 focus:ring-0 text-sm font-bold text-horizon-900 dark:text-white cursor-pointer"
+                               className="block w-full border-none bg-transparent dark:bg-transparent p-0 focus:ring-0 text-sm font-bold text-horizon-900 dark:text-white cursor-pointer"
                              >
                                {ORIENTATION_OPTIONS.map((opt) => (
-                                 <option key={opt.value} value={opt.value} className="dark:bg-horizon-800 dark:text-white">{opt.label}</option>
+                                 <option key={opt.value} value={opt.value} className="bg-white text-horizon-900 dark:bg-horizon-900 dark:text-white">{opt.label}</option>
                                ))}
                              </select>
                              <div className="text-[10px] text-horizon-400 dark:text-horizon-500 font-bold uppercase mt-0.5">

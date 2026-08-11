@@ -104,9 +104,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-horizon-900 pb-12 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-black pb-12 font-sans transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white dark:bg-horizon-800 shadow-sm border-b border-gray-200 dark:border-horizon-700 sticky top-0 z-30">
+      <header className="bg-white dark:bg-black shadow-sm border-b border-gray-200 dark:border-horizon-800 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             {/* Logo Horizon-Energie.be — target="_top" pour sortir de l'iframe */}
