@@ -1,5 +1,22 @@
 import { SimulationResult, UserInput } from '../types';
 
+export const sanitizePhoneNumber = (phone: string): string => {
+  // Supprime les espaces, slashes, antislashes, points et tirets
+  let cleaned = phone.replace(/[\s./\\-]/g, '');
+  
+  // Remplace "00" initial par "+"
+  if (cleaned.startsWith('00')) {
+    cleaned = '+' + cleaned.substring(2);
+  }
+  // Si le numéro commence par "0" (et pas "00"), on suppose que c'est un numéro belge national
+  // et on le convertit au format international "+32"
+  else if (cleaned.startsWith('0')) {
+    cleaned = '+32' + cleaned.substring(1);
+  }
+  
+  return cleaned;
+};
+
 export const pushToCrm = async (
   firstName: string,
   lastName: string,
@@ -45,7 +62,7 @@ export const pushToCrm = async (
         firstName,
         lastName,
         email,
-        phone,
+        phone: sanitizePhoneNumber(phone),
         fullAddress: userInput.address, // On garde l'originale au cas où
         addressDetails: {
           street,
